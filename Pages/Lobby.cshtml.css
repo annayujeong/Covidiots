@@ -1,0 +1,24 @@
+#flexContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: space-around;
+}
+
+h1{
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+#messagesList
+{
+    height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+}

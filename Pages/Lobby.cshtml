@@ -1,0 +1,27 @@
+﻿@page
+@model Covidiots.Pages.LobbyModel
+@{
+
+}
+<h1>Lobby</h1>
+<div class="container">
+            <p>User: </p>
+            <p id="userInput">@ViewData["userName"]</p><br>
+
+
+    <h2>Lobby Chat</h2>
+    <hr />
+    <ul id="messagesList"></ul>
+
+    <div id="flexContainer">
+        <div>
+            <input type="text" id="messageInput" />
+
+            <input type="button" id="sendButton" value="Send Message" />
+        </div>
+        <button id="joinButton" ><a class="nav-link text-dark" asp-area="" asp-page="/Index">Join game</a></button>
+    </div>
+
+</div>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script defer src="~/js/chat.js"></script>

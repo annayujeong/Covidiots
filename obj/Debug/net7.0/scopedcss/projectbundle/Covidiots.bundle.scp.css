@@ -1,3 +1,28 @@
+/* _content/Covidiots/Pages/Lobby.cshtml.rz.scp.css */
+#flexContainer[b-ps4mjl2val] {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: space-around;
+}
+
+h1[b-ps4mjl2val]{
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+#messagesList[b-ps4mjl2val]
+{
+    height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+}
 /* _content/Covidiots/Pages/Shared/_Layout.cshtml.rz.scp.css */
 /* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
