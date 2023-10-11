@@ -4,24 +4,59 @@
 
 }
 <h1>Lobby</h1>
-<div class="container">
-            <p>User: </p>
-            <p id="userInput">@ViewData["userName"]</p><br>
+<div id="mainFlexContainer">
 
-
-    <h2>Lobby Chat</h2>
-    <hr />
-    <ul id="messagesList"></ul>
-
-    <div id="flexContainer">
-        <div>
-            <input type="text" id="messageInput" />
-
-            <input type="button" id="sendButton" value="Send Message" />
-        </div>
-        <button id="joinButton" ><a class="nav-link text-dark" asp-area="" asp-page="/Index">Join game</a></button>
+    <div class="flexItem">
+        <h2>Players</h2>
+        <hr />
+        <ul id="playersList"></ul>
+        <button id="" ><a class="nav-link text-dark">Join Lobby</a></button>
     </div>
 
+    <div class="flexItem">
+        <h2>Game options</h2>
+        <hr />
+
+        <div class="tab">
+            <button class="tablinks" id="defaultOpen" onclick="openTab(event, 'freePlay')">Free play</button>
+            <button class="tablinks" onclick="openTab(event, 'timeLimit')">Time Limit</button>
+        </div>
+
+                <!-- Tab content -->
+
+        <div id="freePlay" class="tabcontent">
+            <h3>Free play</h3>
+            <p>Free Play Mode: Players are not bound by a time limit. The infected team aims to infect as many players as possible.</p>
+        </div>
+
+        <div id="timeLimit" class="tabcontent">
+            <h3>Time limit</h3>
+            <p>Time Limit Mode: A specific time limit where players must survive and prevent infection. The infected team aims to infect as many players as possible within the time frame.</p>
+        </div>
+
+
+        <div class=buttonDiv>
+            <button id="joinButton" ><a class="nav-link text-dark" asp-area="" asp-page="/Index">Start game</a></button>
+        </div>
+    </div>
+
+    <div class="flexItem">
+        <h2>Lobby Chat</h2>
+        <hr />
+        <ul id="messagesList"></ul>
+
+        <label for="messageInput">@ViewData["userName"]</label><br>
+        <input type="text" id="messageInput" />
+        <input type="button" id="sendButton" value="Send Message" />
+    </div>
+
+
+
+
+
 </div>
+
+
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script defer src="~/js/chat.js"></script>
+<script defer src="~/js/tabs.js"></script>

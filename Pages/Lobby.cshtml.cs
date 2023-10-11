@@ -8,12 +8,14 @@ namespace Covidiots.Pages
     [Authorize]
     public class LobbyModel : PageModel
     {
+        
         public void OnGet()
         {
             ViewData["userName"] = User.Identity.Name;
+            
         }
 
 
-
+        
     }
 }

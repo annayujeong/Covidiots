@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "9Z8d7ByFW2StjQkJAWz5Ix88XIdSoSdpBS55aNR0UPk=",
+  "Hash": "Ct4qVGYH/kUdssb4aIFuUUASE6GZKSWKZFYIx2UdFfs=",
   "Source": "Covidiots",
   "BasePath": "_content/Covidiots",
   "Mode": "Default",
@@ -4486,6 +4486,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\site.js"
+    },
+    {
+      "Identity": "C:\\Users\\holyc\\Desktop\\4952\\Covidiots\\wwwroot\\js\\tabs.js",
+      "SourceId": "Covidiots",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\holyc\\Desktop\\4952\\Covidiots\\wwwroot\\",
+      "BasePath": "_content/Covidiots",
+      "RelativePath": "js/tabs.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\tabs.js"
     },
     {
       "Identity": "C:\\Users\\holyc\\Desktop\\4952\\Covidiots\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
