@@ -1,6 +1,10 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "7YWESE8pHXOSIwm1uViZ+55reuD5zgg3akRdkcInCSuNjv2rQaDPUNhR1hNBUKe1Av7Rn3WDEyQ64xCfczCQhA==",
+=======
+  "dgSpecHash": "KAZmy5EKzUcWj4QxaZiGrvteNlJ1qOx0gr5NX5LEoRLX1EOs7kzMvy9029Uwv5cnLH0iHly6ZQ4IihyZlXmYIA==",
+>>>>>>> ed5f6c4d096ab92bf26b380dd8b532c143e9621c
   "success": true,
   "projectFilePath": "/Users/yujeongan/Documents/Projects/HCI/Covidiots/Covidiots.csproj",
   "expectedPackageFiles": [

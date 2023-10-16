@@ -1,6 +1,10 @@
 {
   "Version": 1,
+<<<<<<< HEAD
   "Hash": "jCmJ44E7Kk7oNyBGRgNo3tZ6y5pp7hxicvaMdFrTqgc=",
+=======
+  "Hash": "Ct4qVGYH/kUdssb4aIFuUUASE6GZKSWKZFYIx2UdFfs=",
+>>>>>>> ed5f6c4d096ab92bf26b380dd8b532c143e9621c
   "Source": "Covidiots",
   "BasePath": "_content/Covidiots",
   "Mode": "Default",
@@ -4692,7 +4696,28 @@
       "OriginalItemSpec": "wwwroot/js/site.js"
     },
     {
+<<<<<<< HEAD
       "Identity": "/Users/yujeongan/Documents/Projects/HCI/Covidiots/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css",
+=======
+      "Identity": "C:\\Users\\holyc\\Desktop\\4952\\Covidiots\\wwwroot\\js\\tabs.js",
+      "SourceId": "Covidiots",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\holyc\\Desktop\\4952\\Covidiots\\wwwroot\\",
+      "BasePath": "_content/Covidiots",
+      "RelativePath": "js/tabs.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\tabs.js"
+    },
+    {
+      "Identity": "C:\\Users\\holyc\\Desktop\\4952\\Covidiots\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+>>>>>>> ed5f6c4d096ab92bf26b380dd8b532c143e9621c
       "SourceId": "Covidiots",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/yujeongan/Documents/Projects/HCI/Covidiots/wwwroot/",

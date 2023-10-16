@@ -809,8 +809,17 @@
       "PackagePath": "staticwebassets/js/signalr/src/LongPollingTransport.ts"
     },
     {
+<<<<<<< HEAD
       "Id": "/Users/yujeongan/Documents/Projects/HCI/Covidiots/wwwroot/js/signalr/src/Polyfills.ts",
       "PackagePath": "staticwebassets/js/signalr/src/Polyfills.ts"
+=======
+      "Id": "C:\\Users\\holyc\\Desktop\\4952\\Covidiots\\wwwroot\\js\\tabs.js",
+      "PackagePath": "staticwebassets\\js\\tabs.js"
+    },
+    {
+      "Id": "C:\\Users\\holyc\\Desktop\\4952\\Covidiots\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "PackagePath": "staticwebassets\\lib\\bootstrap"
+>>>>>>> ed5f6c4d096ab92bf26b380dd8b532c143e9621c
     },
     {
       "Id": "/Users/yujeongan/Documents/Projects/HCI/Covidiots/wwwroot/js/signalr/src/ServerSentEventsTransport.ts",
