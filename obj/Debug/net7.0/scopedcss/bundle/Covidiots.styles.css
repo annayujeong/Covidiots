@@ -1,5 +1,5 @@
 /* _content/Covidiots/Pages/Lobby.cshtml.rz.scp.css */
-#flexContainer[b-uxp8o861ll] {
+#flexContainer[b-ps4mjl2val] {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -8,13 +8,13 @@
     align-content: space-around;
 }
 
-h1[b-uxp8o861ll]{
+h1[b-ps4mjl2val]{
     font-size: 3rem;
     font-weight: 700;
     margin-bottom: 1rem;
 }
 
-#messagesList[b-uxp8o861ll]
+#messagesList[b-ps4mjl2val]
 {
     height: 300px;
     overflow-y: scroll;

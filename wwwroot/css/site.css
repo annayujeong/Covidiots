@@ -24,3 +24,32 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* game board */
+#board {
+  border: 49px solid #462921;
+  width: fit-content;
+  margin: 0 auto;
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: repeat(9, 70px);
+  grid-template-rows: repeat(9, 70px);
+  grid-auto-flow: row;
+}
+
+.box {
+  padding: 20px;
+  font-size: 150%;
+  background-color: #b5915f;
+  color: #000;
+  text-align: center;
+}
+
+.box:nth-child(even) {
+  background-color: #441a03;
+  color: #fff;
+}
+
+.target {
+    background-color: red;
+}
