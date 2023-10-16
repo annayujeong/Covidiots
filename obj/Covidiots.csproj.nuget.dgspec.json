@@ -1,27 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\holyc\\Desktop\\4952\\Covidiots\\Covidiots.csproj": {}
+    "/Users/yujeongan/Documents/Projects/HCI/Covidiots/Covidiots.csproj": {}
   },
   "projects": {
-    "C:\\Users\\holyc\\Desktop\\4952\\Covidiots\\Covidiots.csproj": {
+    "/Users/yujeongan/Documents/Projects/HCI/Covidiots/Covidiots.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\holyc\\Desktop\\4952\\Covidiots\\Covidiots.csproj",
+        "projectUniqueName": "/Users/yujeongan/Documents/Projects/HCI/Covidiots/Covidiots.csproj",
         "projectName": "Covidiots",
-        "projectPath": "C:\\Users\\holyc\\Desktop\\4952\\Covidiots\\Covidiots.csproj",
-        "packagesPath": "C:\\Users\\holyc\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\holyc\\Desktop\\4952\\Covidiots\\obj\\",
+        "projectPath": "/Users/yujeongan/Documents/Projects/HCI/Covidiots/Covidiots.csproj",
+        "packagesPath": "/Users/yujeongan/.nuget/packages/",
+        "outputPath": "/Users/yujeongan/Documents/Projects/HCI/Covidiots/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\holyc\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/yujeongan/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -84,7 +82,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.400/RuntimeIdentifierGraph.json"
         }
       }
     }
