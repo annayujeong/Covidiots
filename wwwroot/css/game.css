@@ -1,0 +1,26 @@
+#board {
+	border: 49px solid #462921;
+	width: fit-content;
+	margin: 0 auto;
+	display: grid;
+	grid-gap: 0;
+	grid-template-columns: repeat(16, 70px);
+	grid-template-rows: repeat(10, 70px);
+	grid-auto-flow: row;
+}
+
+.box {
+    background-image: url('/images/Tile.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.target {
+	background-color: red;
+}
+
+#user {
+    background-image: url('/images/Fries.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
