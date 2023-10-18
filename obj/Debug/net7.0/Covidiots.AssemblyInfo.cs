@@ -10,7 +10,6 @@
 using System;
 using System.Reflection;
 
-[assembly: Microsoft.AspNetCore.Identity.UI.UIFrameworkAttribute("Bootstrap5")]
 [assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("aspnet-Covidiots-d1f2cd3c-7fba-4c77-87cb-1f84d3a9893f")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("Covidiots")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]

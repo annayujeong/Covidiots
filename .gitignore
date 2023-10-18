@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Delete bin and obj folders or the game cannot run
+bin/
+obj/
+
 # User-specific files
 *.rsuser
 *.suo
