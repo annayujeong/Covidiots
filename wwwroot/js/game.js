@@ -24,19 +24,42 @@ function initializeBoard(startingX, startingY) {
 		wrapper.appendChild(box);
 	}
 	wrapper.id = "board";
+	
+	initializeBoardWithDoors();
+	
+
 	array[startingX][startingY] = 1;
 	changeCellColor(startingX, startingY);
 }
 
-function changeCellColor(x, y) {
+function initializeBoardWithDoors() {
+	const middleX = Math.floor(rows / 2);
+	const middleY = Math.floor(cols / 2);
+
+	addDoor(middleX, 0);
+	addDoor(middleX, cols - 1);
+	addDoor(0, middleY);
+	addDoor(rows - 1, middleY);
+}
+
+function addDoor (x, y) {
 	let cellId = rows * x + y;
 	let cell = document.getElementById(cellId);
-	if (cell.className === "target") {
+	cell.className = "door";
+}
+
+// change the color of the cell
+function changeCellColor(x, y) { 
+	let cellId = rows * x + y;
+	let cell = document.getElementById(cellId);
+
+	if (cell.className === "target") { // target is the player
 		cell.className = "box";
 	} else {
 		cell.className = "target";
 	}
 }
+
 
 function move(prevX, prevY, destX, destY) {
 	array[prevX][prevY] = 0;
@@ -90,6 +113,11 @@ document.addEventListener("DOMContentLoaded", function () {
 			destX = prevX;
 			destY = prevY;
 		} 
+		// Prevent movement if it is a door
+		else if (document.getElementById(rows * destX + destY).className === "door") {
+			destX = prevX;
+			destY = prevY;
+		}
 		
         move(prevX, prevY, destX, destY);
         prevX = destX;

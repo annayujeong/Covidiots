@@ -15,8 +15,14 @@
     background-repeat: no-repeat;
 }
 
-.target {
+.target { 
 	background-color: red;
+}
+
+.door {
+    background-image: url('/images/Door.png');
+    background-size: cover;
+    background-repeat: no-repeat; 
 }
 
 #user {
