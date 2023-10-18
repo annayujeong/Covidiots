@@ -54,22 +54,43 @@ document.addEventListener("DOMContentLoaded", function () {
 	initializeBoard(prevX, prevY);
 
 	document.addEventListener("keydown", function (event) {
-		switch (event.key) {
-			case "ArrowUp":
+		let key = event.key;
+		// check if user is using Arrow keys to move
+		if (key === "ArrowUp") {
+			key = "w";
+		}
+		if (key === "ArrowDown") {
+			key = "s";
+		}
+		if (key === "ArrowLeft") {
+			key = "a";
+		}
+		if (key === "ArrowRight") {
+			key = "d";
+		}
+
+		switch (key) {
+			case "w":
 				destX -= 1;
 				break;
-			case "ArrowDown":
+			case "s":
 				destX += 1;
 				break;
-			case "ArrowLeft":
+			case "a":
 				destY -= 1;
 				break;
-			case "ArrowRight":
+			case "d":
 				destY += 1;
 				break;
 			default:
 				break;
 		}
+		// Prevent movement if the user tries to move out of bounds; keep the previous position
+		if (destX < 0 || destX >= rows || destY < 0 || destY >= cols) {
+			destX = prevX;
+			destY = prevY;
+		} 
+		
         move(prevX, prevY, destX, destY);
         prevX = destX;
         prevY = destY;
