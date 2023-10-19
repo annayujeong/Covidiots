@@ -15,6 +15,35 @@ connection.on("ReceiveMessage", function (user, message)
     li.textContent = `${user} says ${message}`;
 });
 
+// connection.on("UserConnected", (connectionId) => 
+// {
+//     document.getElementById("userInput").innerHTML += "j";
+// });
+
+// connection.on("UserDisconnected", (connectionId) => 
+// {
+//     document.getElementById("userInput").innerHTML += "j";
+// });
+
+connection.on("JoinLobby", (name) =>
+{
+    let ul = document.getElementById("playersList");
+    ul.innerHTML += `<li>${name}</li>`;
+})
+
+connection.on("LeaveLobby", (name) =>
+{   
+    let ul = document.getElementById("playersList");
+    let li = ul.getElementsByTagName("li");
+    for(let i = 0; i < li.length; i++)
+    {
+        if(li[i].innerHTML == name)
+        {
+            ul.removeChild(li[i]);
+        }
+    }
+})
+
 connection.start().then(function () {
     document.getElementById("sendButton").disabled = false;
 }).catch(function (err) {
@@ -23,10 +52,26 @@ connection.start().then(function () {
 
 document.getElementById("sendButton").addEventListener("click", function (event) {
     var user = document.getElementById("userInput").innerHTML;
-    console.log(user);
     var message = document.getElementById("messageInput").value;
     connection.invoke("SendMessage", user, message).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();
 });
+
+
+function joinButton(event)
+{
+    connection.invoke("JoinLobby", document.getElementById("userInput").innerHTML);
+    let button = document.getElementById("joinButton");
+    button.onclick = leaveButton;
+    button.innerHTML = "Leave Lobby";
+}
+
+function leaveButton()
+{
+    connection.invoke("LeaveLobby", document.getElementById("userInput").innerHTML);
+    let button = document.getElementById("joinButton");
+    button.onclick = joinButton;
+    button.innerHTML = "Join Lobby";
+}

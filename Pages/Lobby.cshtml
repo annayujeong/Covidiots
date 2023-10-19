@@ -1,7 +1,8 @@
 ﻿@page
+@inject Lobby lobby
 @model Covidiots.Pages.LobbyModel
 @{
-
+<script defer src="~/js/chat.js"></script>
 }
 <h1>Lobby</h1>
 <div id="mainFlexContainer">
@@ -9,8 +10,15 @@
     <div class="flexItem">
         <h2>Players</h2>
         <hr />
-        <ul id="playersList"></ul>
-        <button id="" ><a class="nav-link text-dark">Join Lobby</a></button>
+        
+        <ul id="playersList">
+
+            @foreach (var player in lobby.Players)
+            {
+                <li>@player.Name</li>
+            }
+        </ul>
+        <button id="joinButton" onclick="joinButton()" >Join Lobby</a></button>
     </div>
 
     <div class="flexItem">
@@ -36,7 +44,7 @@
 
 
         <div class=buttonDiv>
-            <button id="joinButton" ><a class="nav-link text-dark" asp-area="" asp-page="/Index">Start game</a></button>
+            <button ><a class="nav-link text-dark" asp-area="" asp-page="/Index">Start game</a></button>
         </div>
     </div>
 
@@ -45,7 +53,7 @@
         <hr />
         <ul id="messagesList"></ul>
 
-        <label for="messageInput">@ViewData["userName"]</label><br>
+        <label for="messageInput" id="userInput">@ViewData["userName"]</label><br>
         <input type="text" id="messageInput" />
         <input type="button" id="sendButton" value="Send Message" />
     </div>
@@ -58,5 +66,7 @@
 
 
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
-<script defer src="~/js/chat.js"></script>
+
 <script defer src="~/js/tabs.js"></script>
+
+

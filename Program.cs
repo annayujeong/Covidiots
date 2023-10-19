@@ -16,6 +16,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 builder.Services.AddRazorPages();
 
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<Lobby>();
 
 var app = builder.Build();
 
