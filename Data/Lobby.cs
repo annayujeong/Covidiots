@@ -8,11 +8,12 @@ namespace Covidiots.Data
     public class Player
     {
         public string Name { get; set; }
+        public string Email { get; set; }
         public bool Ready{ get; set; }
     }
 
     public class Lobby
     {
-        public List<Player> Players = new();
+        public Dictionary<string, Player> Players = new();
     }
 }

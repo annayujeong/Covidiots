@@ -1,9 +1,14 @@
 ﻿@page
+@using Hubs
 @inject Lobby lobby
+@inject UserManager<CustomUser> userManager
 @model Covidiots.Pages.LobbyModel
 @{
 <script defer src="~/js/chat.js"></script>
+var user = await userManager.GetUserAsync(User);
 }
+
+
 <h1>Lobby</h1>
 <div id="mainFlexContainer">
 
@@ -15,10 +20,13 @@
 
             @foreach (var player in lobby.Players)
             {
-                <li>@player.Name</li>
+                <li id=@player.Key>@player.Value.Name</li>
             }
         </ul>
-        <button id="joinButton" onclick="joinButton()" >Join Lobby</a></button>
+        
+
+        <button id="joinButton" onclick="joinButton()">Join Lobby</button>
+        <button id="readyButton" onclick="readyButton()" disabled="true">Ready</a></button>
     </div>
 
     <div class="flexItem">
@@ -53,7 +61,8 @@
         <hr />
         <ul id="messagesList"></ul>
 
-        <label for="messageInput" id="userInput">@ViewData["userName"]</label><br>
+        <label for="messageInput" id="userInput">@user.ScreenName</label><br>
+        <p hidden="true" id="userEmail">@user.Email</p>
         <input type="text" id="messageInput" />
         <input type="button" id="sendButton" value="Send Message" />
     </div>
