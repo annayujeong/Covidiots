@@ -1,32 +1,47 @@
 #board {
-	border: 49px solid #462921;
-	width: fit-content;
-	margin: 0 auto;
-	display: grid;
-	grid-gap: 0;
-    grid-template-columns: repeat(9, 70px);
-    grid-template-rows: repeat(9, 70px);
-	grid-auto-flow: row;
+  border: 49px solid #462921;
+  width: fit-content;
+  margin: 0 auto;
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: repeat(9, 70px);
+  grid-template-rows: repeat(9, 70px);
+  grid-auto-flow: row;
 }
 
 .box {
-    background-image: url('/images/Tile.png');
-    background-size: cover;
-    background-repeat: no-repeat;
+  background-image: url("/images/Tile.png");
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
-.target { 
-	background-color: red;
+.target {
+  background-color: red;
 }
 
 .door {
-    background-image: url('/images/Door.png');
-    background-size: cover;
-    background-repeat: no-repeat; 
+  background-image: url("/images/Door.png");
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 #user {
-    background-image: url('/images/Fries.png');
-    background-size: cover;
-    background-repeat: no-repeat;
+  background-image: url("/images/Fries.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#progress-bar-container {
+  display: none; /* Initially hide the progress bar container */
+  position: absolute;
+  width: 100%;
+  height: 100px;
+  background-color: #ccc;
+}
+
+#progress-bar {
+  width: 0; /* Start with 0% progress */
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 2s; /* Set the transition duration to 2 seconds */
 }
