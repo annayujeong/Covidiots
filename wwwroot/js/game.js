@@ -1,14 +1,16 @@
-const MAX_BOX = 121;
+const MAX_TILES = 121;
 const rows = 11;
 const cols = 11;
 const initialValue = 0;
 let progressBarContainer = document.createElement("div");
 let progressBar = document.createElement("div");
+let wrapper = document.getElementById("wrapper");
 let isProgressBarActive = false;
+
+// Create a 2D array with the specified number of rows and columns
 const array = Array.from({ length: rows }, () =>
   Array.from({ length: cols }, () => initialValue)
-);
-
+); 
 
 function GameBoard(id) {
   this.id = id;
@@ -42,47 +44,47 @@ function hideProgressBar() {
 }
 
 function initializeBoard(startingX, startingY) {
-  let wrapper = document.getElementById("wrapper");
-  for (var i = 0; i < MAX_BOX; i++) {
-    var box = document.createElement("div");
-    box.className = "box";
-    box.id = i;
-    wrapper.appendChild(box);
+  for (let i = 0; i < MAX_TILES; i++) { // populate the board with tiles that can be either floor or wall or door
+    let floor = document.createElement("div");
+    let wall = document.createElement("div");
+    let door = document.createElement("div");
+    // add walls to the outer edges of the board
+    if (i < rows || i > MAX_TILES - rows || i % rows === 0 || i % rows === rows - 1) {
+      // add doors to the middle of the outer edges of the board
+      if (i === 5 || i === 55 || i === 65 || i === MAX_TILES - 6) { // hard code LOL
+        door.className = "door";
+        door.id = i;
+        wrapper.appendChild(door);
+      } else {
+        wall.className = "wall";
+        wall.id = i;
+        wrapper.appendChild(wall);
+      }
+    } else {
+      floor.className = "floor";
+      floor.id = i;
+      wrapper.appendChild(floor);
+    }
   }
   wrapper.id = "board";
-  initializeBoardWithDoors();
-  // add progress bar container in the board div
+  initializeProgressBar();
+  array[startingX][startingY] = 1;
+  changeCellColor(startingX, startingY);
+}
+
+function initializeProgressBar() { // Create the progress bar div and hides it by default
   progressBarContainer.id = "progress-bar-container";
   progressBarContainer.style.display = "none";
   progressBar.id = "progress-bar";
   progressBarContainer.appendChild(progressBar);
   wrapper.appendChild(progressBarContainer);
-  
-  array[startingX][startingY] = 1;
-  changeCellColor(startingX, startingY);
 }
 
-function initializeBoardWithDoors() {
-  // spawns doors in the middle of each side
-  let middleX = Math.floor(rows / 2);
-  let middleY = Math.floor(cols / 2);
-  addDoor(middleX, 0);
-  addDoor(middleX, cols - 1);
-  addDoor(0, middleY);
-  addDoor(rows - 1, middleY);
-}
-
-function addDoor(x, y) {
+function changeCellColor(x, y) { // Used to indicate the player's position
   let cellId = rows * x + y;
   let cell = document.getElementById(cellId);
-  cell.className = "door";
-}
-
-function changeCellColor(x, y) {
-  let cellId = rows * x + y;
-  let cell = document.getElementById(cellId);
-  if (cell.className === "target") {
-    cell.className = "box";
+  if (cell.className === "target") { // target is the player
+    cell.className = "floor";
   } else {
     cell.className = "target";
   }
@@ -152,10 +154,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function isValidMovement(destX, destY) {
   // Prevent movement if colliding with wall or door
-  if (destX < 1 || destX > rows || destY < 1 || destY > cols) {
+  if (destX < 1 || destX > (rows - 2) || destY < 1 || destY > (cols - 2)) {
     return false;
   }
-  if (document.getElementById(rows * destX + destY).className === "door") {
+  if (document.getElementById(rows * destX + destY).className === "door" || document.getElementById(rows * destX + destY).className === "wall") {
     return false;
   }
   return true;
