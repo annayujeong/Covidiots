@@ -46,5 +46,5 @@
   width: 0; /* Start with 0% progress */
   height: 100%;
   background-color: #4caf50;
-  transition: width 2s; /* Set the transition duration to 2 seconds */
+  /* transition: width 2s; Set the transition duration to 2 seconds */
 }

@@ -2,8 +2,8 @@ const MAX_BOX = 81;
 const rows = 9;
 const cols = 9;
 const initialValue = 0;
-let progressBarContainer = document.getElementById("progress-bar-container");
-let progressBar = document.getElementById("progress-bar");
+let progressBarContainer = document.createElement("div");
+let progressBar = document.createElement("div");
 let isProgressBarActive = false;
 const array = Array.from({ length: rows }, () =>
   Array.from({ length: cols }, () => initialValue)
@@ -51,6 +51,13 @@ function initializeBoard(startingX, startingY) {
   }
   wrapper.id = "board";
   initializeBoardWithDoors();
+  // add progress bar container in the board div
+  progressBarContainer.id = "progress-bar-container";
+  progressBarContainer.style.display = "none";
+  progressBar.id = "progress-bar";
+  progressBarContainer.appendChild(progressBar);
+  wrapper.appendChild(progressBarContainer);
+  
   array[startingX][startingY] = 1;
   changeCellColor(startingX, startingY);
 }
