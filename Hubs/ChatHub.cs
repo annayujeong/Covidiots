@@ -38,6 +38,34 @@ public class ChatHub : Hub
         return Clients.All.SendAsync("LeaveLobby", user, email);
     }
 
+    public Task Ready(string user, string email)
+    {
+        lobby.Players[email].Ready = true;
+        
+        string allReady = "false";
+
+        for(int i = 0; i < lobby.Players.Count; i++)
+        {
+            if(lobby.Players.ElementAt(i).Value.Ready == true)
+            {
+                allReady = "true";
+            }
+            else
+            {
+                allReady = "false";
+                break;
+            }
+        }
+
+        return Clients.All.SendAsync("Ready", user, email, allReady);
+    }
+
+    public Task Unready(string user, string email)
+    {
+        lobby.Players[email].Ready = false;
+        return Clients.All.SendAsync("Unready", user, email);
+    }
+
     public override Task OnConnectedAsync()
     {
         ScreenName = userManager.GetUserAsync(Context.User).Result.ScreenName;
@@ -51,6 +79,9 @@ public class ChatHub : Hub
         return base.OnDisconnectedAsync(exception);
     }
 
-    
+    public Task startGame()
+    {
+        return Clients.All.SendAsync("startGame");
+    }
 }
 

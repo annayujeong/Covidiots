@@ -23,6 +23,25 @@ connection.on("LeaveLobby", (user, email) =>
     document.getElementById(email).remove();
 })
 
+connection.on("Ready", (user, email, allReady) =>
+{
+    let li = document.getElementById(email);
+    li.innerHTML += " - Ready";
+
+    if(allReady == "true")
+    {
+        document.getElementById("startButton").disabled = false;
+    }
+})
+
+connection.on("Unready", (user, email) =>
+{
+    let li = document.getElementById(email);
+    li.innerHTML = user;
+
+    document.getElementById("startButton").disabled = true;
+})
+
 connection.on("RedirectToHome", () =>
 {
     window.location.href = "https://localhost:5001";
@@ -34,6 +53,12 @@ connection.start().then(function () {
 }).catch(function (err) {
     return console.error(err.toString());
 });
+
+connection.on("startGame", () =>
+{
+    window.location.replace("/Game");
+
+})
 
 document.getElementById("sendButton").addEventListener("click", function (event) 
 {
@@ -68,7 +93,7 @@ function leaveButton()
 
 function readyButton()
 {
-    connection.invoke("Ready", document.getElementById("userInput").innerHTML);
+    connection.invoke("Ready", document.getElementById("userInput").innerHTML, document.getElementById("userEmail").innerHTML);
     let button = document.getElementById("readyButton");
     button.onclick = unreadyButton;
     button.innerHTML = "Unready";
@@ -76,7 +101,7 @@ function readyButton()
 
 function unreadyButton()
 {
-    connection.invoke("Unready", document.getElementById("userInput").innerHTML);
+    connection.invoke("Unready", document.getElementById("userInput").innerHTML, document.getElementById("userEmail").innerHTML);
     let button = document.getElementById("readyButton");
     button.onclick = readyButton;
     button.innerHTML = "Ready";
@@ -93,3 +118,7 @@ function checkButtonStates()
     }
 }
 
+function startGame()
+{
+    connection.invoke("startGame");
+}
