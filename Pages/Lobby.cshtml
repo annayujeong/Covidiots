@@ -1,16 +1,32 @@
 ﻿@page
+@using Hubs
+@inject Lobby lobby
+@inject UserManager<CustomUser> userManager
 @model Covidiots.Pages.LobbyModel
 @{
-
+<script defer src="~/js/chat.js"></script>
+var user = await userManager.GetUserAsync(User);
 }
+
+
 <h1>Lobby</h1>
 <div id="mainFlexContainer">
 
     <div class="flexItem">
         <h2>Players</h2>
         <hr />
-        <ul id="playersList"></ul>
-        <button id="" ><a class="nav-link text-dark">Join Lobby</a></button>
+        
+        <ul id="playersList">
+
+            @foreach (var player in lobby.Players)
+            {
+                <li id=@player.Key>@player.Value.Name</li>
+            }
+        </ul>
+        
+
+        <button id="joinButton" onclick="joinButton()">Join Lobby</button>
+        <button id="readyButton" onclick="readyButton()" disabled="true">Ready</a></button>
     </div>
 
     <div class="flexItem">
@@ -36,7 +52,7 @@
 
 
         <div class=buttonDiv>
-            <button id="joinButton" ><a class="nav-link text-dark" asp-area="" asp-page="/Index">Start game</a></button>
+            <button ><a class="nav-link text-dark" asp-area="" asp-page="/Index">Start game</a></button>
         </div>
     </div>
 
@@ -45,7 +61,8 @@
         <hr />
         <ul id="messagesList"></ul>
 
-        <label for="messageInput">@ViewData["userName"]</label><br>
+        <label for="messageInput" id="userInput">@user.ScreenName</label><br>
+        <p hidden="true" id="userEmail">@user.Email</p>
         <input type="text" id="messageInput" />
         <input type="button" id="sendButton" value="Send Message" />
     </div>
@@ -58,5 +75,7 @@
 
 
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
-<script defer src="~/js/chat.js"></script>
+
 <script defer src="~/js/tabs.js"></script>
+
+

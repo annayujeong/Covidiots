@@ -9,13 +9,25 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<CustomUser, IdentityRole>(
+options => {
+options.Stores.MaxLengthForKeys = 128;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultUI()
+.AddDefaultTokenProviders()
+.AddRoles<IdentityRole>();
+
 builder.Services.AddRazorPages();
 
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<Lobby>();
+
+builder.Services.AddSession();
+
 
 var app = builder.Build();
 
@@ -30,7 +42,7 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.UseSession();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -41,5 +53,7 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.MapHub<ChatHub>("/chatHub");
+
+
 
 app.Run();
