@@ -25,14 +25,14 @@ function showProgressBar() {
 
   let width = 0;
   let intervalId = setInterval(() => {
-    if (width >= 100) {
+    if (width >= 100) { // Stop the interval when the progress bar reaches 100%
       clearInterval(intervalId);
       hideProgressBar();
     } else {
       width++; 
-      progressBar.style.width = width + '%'; 
+      progressBar.style.width = width + '%'; // Increase the progress bar width by 1%
     }
-  }, 20);
+  }, 20); // Increase the progress bar width every 20 milliseconds
 }
 
 function hideProgressBar() {
