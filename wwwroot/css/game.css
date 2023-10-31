@@ -38,19 +38,17 @@
 }
 
 #progress-bar-container {
-  display: none; /* Initially hide the progress bar container */
-  position: fixed; /* Use fixed positioning */
-  top: 50%; /* Position at the middle of the screen vertically */
-  left: 0; /* Start from the left edge of the screen */
-  width: 100%; /* Take up the full width of the screen */
-  height: 100px; /* Set a fixed height for the progress bar */
+  display: none;
+  position: fixed; 
+  top: 50%;
+  left: 40%; 
+  width: 20%; 
+  height: 20px;
   background-color: #ccc;
-  transform: translateY(-50%); /* Shift up by half the height of the progress bar */
 }
 
 #progress-bar {
   width: 0; /* Start with 0% progress */
   height: 100%;
   background-color: #4caf50;
-  /* transition: width 2s; Set the transition duration to 2 seconds */
 }

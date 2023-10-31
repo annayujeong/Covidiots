@@ -2,9 +2,12 @@ const MAX_TILES = 121;
 const rows = 11;
 const cols = 11;
 const initialValue = 0;
+const doorOpeningSpeed = 20; // in milliseconds per 1% of the progress bar width
+const wrapper = document.getElementById("wrapper");
+const startingX = 5;
+const startingY = 5;
 let progressBarContainer = document.createElement("div");
 let progressBar = document.createElement("div");
-let wrapper = document.getElementById("wrapper");
 let isProgressBarActive = false;
 
 // Create a 2D array with the specified number of rows and columns
@@ -34,7 +37,7 @@ function showProgressBar() {
       width++; 
       progressBar.style.width = width + '%'; // Increase the progress bar width by 1%
     }
-  }, 20); // Increase the progress bar width every 20 milliseconds
+  }, doorOpeningSpeed);
 }
 
 function hideProgressBar() {
@@ -43,7 +46,7 @@ function hideProgressBar() {
   isProgressBarActive = false;
 }
 
-function initializeBoard(startingX, startingY) {
+function initializeBoard(posX, posY) {
   for (let i = 0; i < MAX_TILES; i++) { // populate the board with tiles that can be either floor or wall or door
     let floor = document.createElement("div");
     let wall = document.createElement("div");
@@ -68,8 +71,9 @@ function initializeBoard(startingX, startingY) {
   }
   wrapper.id = "board";
   initializeProgressBar();
-  array[startingX][startingY] = 1;
-  changeCellColor(startingX, startingY);
+  array[posX][posY] = 1;
+  let target = document.getElementById(rows * posX + posY);
+  target.className = "target";
 }
 
 function initializeProgressBar() { // Create the progress bar div and hides it by default
@@ -80,26 +84,9 @@ function initializeProgressBar() { // Create the progress bar div and hides it b
   wrapper.appendChild(progressBarContainer);
 }
 
-function changeCellColor(x, y) { // Used to indicate the player's position
-  let cellId = rows * x + y;
-  let cell = document.getElementById(cellId);
-  if (cell.className === "target") { // target is the player
-    cell.className = "floor";
-  } else {
-    cell.className = "target";
-  }
-}
-
-function move(prevX, prevY, destX, destY) {
-  array[prevX][prevY] = 0;
-  array[destX][destY] = 1;
-  changeCellColor(prevX, prevY);
-  changeCellColor(destX, destY);
-}
-
 document.addEventListener("DOMContentLoaded", function () {
-  let prevX = 5;
-  let prevY = 5;
+  let prevX = startingX;
+  let prevY = startingY;
   let destX = prevX;
   let destY = prevY;
 
@@ -119,7 +106,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (key === "ArrowRight") {
       key = "d";
     }
-
     switch (key) {
       case "w":
         destX -= 1;
@@ -152,12 +138,25 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+function move(prevX, prevY, destX, destY) {
+  array[prevX][prevY] = 0;
+  array[destX][destY] = 1;
+  switchCellClass(prevX, prevY, destX, destY);
+}
+
+switchCellClass = (prevX, prevY, destX, destY) => {
+  let prevCell = document.getElementById(rows * prevX + prevY);
+  let destCell = document.getElementById(rows * destX + destY);
+  let tempCell = prevCell.className;
+  prevCell.className = destCell.className;
+  destCell.className = tempCell;
+}
+
 function isValidMovement(destX, destY) {
-  // Prevent movement if colliding with wall or door
-  if (destX < 1 || destX > (rows - 2) || destY < 1 || destY > (cols - 2)) {
-    return false;
-  }
-  if (document.getElementById(rows * destX + destY).className === "door" || document.getElementById(rows * destX + destY).className === "wall") {
+  // Prevent movement if colliding outside the grid
+  let permittedCells = ["floor", "door"];
+  let cell = document.getElementById(rows * destX + destY);
+  if (!permittedCells.includes(cell.className)) {
     return false;
   }
   return true;
