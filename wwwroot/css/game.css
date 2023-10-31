@@ -9,8 +9,14 @@
   grid-auto-flow: row;
 }
 
-.box {
+.floor {
   background-image: url("/images/Tile.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.wall {
+  background-image: url("/images/Wall.png");
   background-size: cover;
   background-repeat: no-repeat;
 }
