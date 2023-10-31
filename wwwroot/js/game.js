@@ -6,28 +6,23 @@ const doorOpeningSpeed = 20; // in milliseconds per 1% of the progress bar width
 const wrapper = document.getElementById("wrapper");
 const startingX = 5;
 const startingY = 5;
+const items = ["fries", "toilet-paper", "water"];
+
 let progressBarContainer = document.createElement("div");
 let progressBar = document.createElement("div");
 let isProgressBarActive = false;
 
 // Create a 2D array with the specified number of rows and columns
-const array = Array.from({ length: rows }, () =>
-  Array.from({ length: cols }, () => initialValue)
-); 
+const array = Array.from({ length: rows }, () => Array.from({ length: cols }, () => initialValue)); 
 
-function GameBoard(id) {
-  this.id = id;
-}
+function GameBoard(id) { this.id = id; }
 
-function Cell(id) {
-  this.id = id;
-}
+function Cell(id) { this.id = id; }
 
 function showProgressBar() {
   progressBar.style.width = "0%"; // Reset the progress bar
   progressBarContainer.style.display = "block"; // Show the progress bar container
   isProgressBarActive = true;
-
   let width = 0;
   let intervalId = setInterval(() => {
     if (width >= 100) { // Stop the interval when the progress bar reaches 100%
@@ -71,10 +66,23 @@ function initializeBoard(posX, posY) {
   }
   wrapper.id = "board";
   initializeProgressBar();
-  array[posX][posY] = 1;
   let target = document.getElementById(rows * posX + posY);
   target.className = "target";
+  placeItemRandomlyOnBoard();
 }
+
+function placeItemRandomlyOnBoard() {
+  let randomX = Math.floor(Math.random() * rows);
+  let randomY = Math.floor(Math.random() * cols);
+  while (document.getElementById(rows * randomX + randomY).className !== "floor") { // repeat until a floor tile is found
+    randomX = Math.floor(Math.random() * rows);
+    randomY = Math.floor(Math.random() * cols);
+  }
+  let item = document.getElementById(rows * randomX + randomY);
+  let randomItem = Math.floor(Math.random() * items.length);
+  item.className = items[randomItem];
+}
+
 
 function initializeProgressBar() { // Create the progress bar div and hides it by default
   progressBarContainer.id = "progress-bar-container";
@@ -144,7 +152,7 @@ function move(prevX, prevY, destX, destY) {
   switchCellClass(prevX, prevY, destX, destY);
 }
 
-switchCellClass = (prevX, prevY, destX, destY) => {
+switchCellClass = (prevX, prevY, destX, destY) => { 
   let prevCell = document.getElementById(rows * prevX + prevY);
   let destCell = document.getElementById(rows * destX + destY);
   let tempCell = prevCell.className;

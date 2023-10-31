@@ -9,6 +9,24 @@
   grid-auto-flow: row;
 }
 
+.fries {
+  background-image: url("/images/Fries.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.toilet-paper {
+  background-image: url("/images/ToiletPaper.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.water {
+  background-image: url("/images/Water.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
 .floor {
   background-image: url("/images/Tile.png");
   background-size: cover;
