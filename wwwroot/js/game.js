@@ -1,6 +1,6 @@
-const MAX_BOX = 81;
-const rows = 9;
-const cols = 9;
+const MAX_BOX = 121;
+const rows = 11;
+const cols = 11;
 const initialValue = 0;
 let progressBarContainer = document.createElement("div");
 let progressBar = document.createElement("div");
@@ -96,8 +96,8 @@ function move(prevX, prevY, destX, destY) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  let prevX = 4;
-  let prevY = 4;
+  let prevX = 5;
+  let prevY = 5;
   let destX = prevX;
   let destY = prevY;
 
@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function isValidMovement(destX, destY) {
   // Prevent movement if colliding with wall or door
-  if (destX < 0 || destX >= rows || destY < 0 || destY >= cols) {
+  if (destX < 1 || destX > rows || destY < 1 || destY > cols) {
     return false;
   }
   if (document.getElementById(rows * destX + destY).className === "door") {

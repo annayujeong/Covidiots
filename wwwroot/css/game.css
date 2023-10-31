@@ -4,8 +4,8 @@
   margin: 0 auto;
   display: grid;
   grid-gap: 0;
-  grid-template-columns: repeat(9, 70px);
-  grid-template-rows: repeat(9, 70px);
+  grid-template-columns: repeat(11, 70px);
+  grid-template-rows: repeat(11, 70px);
   grid-auto-flow: row;
 }
 
