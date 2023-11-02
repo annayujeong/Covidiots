@@ -18,9 +18,9 @@ namespace Covidiots.Hubs
             return base.OnDisconnectedAsync(exception);
         }
 
-        public Task playerMove(string email, string x, string y)
+        public Task playerMove(string email, string prevX, string prevY, string destX, string destY)
         {
-            return Clients.All.SendAsync("playerMove", email, x, y);
+            return Clients.All.SendAsync("playerMove", email, prevX, prevY, destX, destY);
         }
     }
 }

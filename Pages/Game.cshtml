@@ -1,6 +1,9 @@
 ﻿@page
+@inject Lobby lobby
+@inject UserManager<CustomUser> userManager
 @model MyApp.Namespace.GameModel
 @{
+    var user = await userManager.GetUserAsync(User);
 }
 
 <div id="container">
@@ -8,6 +11,14 @@
     </div>
 </div>
 
+<div id="players" hidden=true>
+    @foreach (var player in lobby.Players)
+    {
+        <div class="player" id="@player.Key"></div>
+    }
+</div>
+
+<p hidden=true id="playerId">@user.Email</p>
 
 <link rel="stylesheet" href="~/css/game.css" />
 <script defer src="~/js/game.js"></script>

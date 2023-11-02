@@ -42,6 +42,7 @@ function hideProgressBar() {
 }
 
 function initializeBoard(startingX, startingY) {
+  console.log(document.getElementById("players"));
   let wrapper = document.getElementById("wrapper");
   for (var i = 0; i < MAX_BOX; i++) {
     var box = document.createElement("div");
