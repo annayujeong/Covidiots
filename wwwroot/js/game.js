@@ -9,7 +9,7 @@ const cols = 11;
 const initialValue = 0;
 const doorOpeningSpeed = 20; // in milliseconds per 1% of the progress bar width
 const wrapper = document.getElementById("wrapper");
-let startingX = 5;
+const startingX = 5;
 const startingY = 5;
 const items = ["fries", "toilet-paper", "water"];
 
@@ -82,12 +82,24 @@ document.addEventListener("DOMContentLoaded", function () {
     players = JSON.parse(document.getElementById("players").innerHTML.slice(0, -2));
     let player = document.getElementById("user").innerHTML;
 
-    let prevX = players[player].xPos;
-    let prevY = players[player].yPos;
+    let prevX;
+    let prevY;
+    if(players[player] != null)
+    {
+      prevX = players[player].xPos;
+      prevY = players[player].yPos;
+    }
+    else
+    {
+      prevX = startingX;
+      prevY = startingY;
+    }
+
     let destX = prevX;
     let destY = prevY;
     console.log(prevX, prevY)
     initializeBoard(prevX, prevY);
+
 
     for(let key in players)
     {
