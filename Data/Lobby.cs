@@ -10,6 +10,8 @@ namespace Covidiots.Data
         public string Name { get; set; }
         public string Email { get; set; }
         public bool Ready{ get; set; }
+        public int xPos { get; set; }
+        public int yPos { get; set; }
     }
 
     public class Lobby
