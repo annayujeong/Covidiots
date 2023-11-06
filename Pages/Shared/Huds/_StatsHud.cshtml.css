@@ -1,0 +1,48 @@
+#hud-stats {
+    display: none;
+    flex-direction: column;
+	justify-content: center;
+	width: 100%;
+	justify-content: space-between;
+	align-items: center;
+	margin: 10px 0 10px 0;
+}
+
+.stat {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin: 10px 0 10px 0;
+}
+
+.progress-bar {
+	width: 80%;
+	background-color: #f2f2f2;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	margin: 0 0 5px 5px;
+}
+
+.progress {
+	height: 25px;
+	line-height: 25px;
+	color: #fff;
+	text-align: center;
+	border-radius: 5px;
+	width: 50%;
+	transition: width 0.3s;
+	padding-left: 5px;
+}
+
+#health-progress {
+	background-color: red;
+}
+
+#hunger-progress {
+	background-color: green;
+}
+
+#thirst-progress {
+	background-color: blue;
+}

@@ -1,0 +1,12 @@
+#hud {
+	border-radius: 20px;
+	background-color: rgba(0, 0, 0, 0.7);
+	padding: 20px;
+	width: 25vw;
+	height: 25vh;
+	position: fixed;
+	bottom: 100px;
+	right: 100px; /* TODO: change bottom and right*/
+	color: white;
+    display: none;
+}
