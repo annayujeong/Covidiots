@@ -28,7 +28,7 @@ public class ChatHub : Hub
 
     public Task JoinLobby(string user, string email)
     {
-        lobby.Players.Add(email, new Player() { Name = user, Ready = false, Email = email });
+        lobby.Players.Add(email, new Player() { Name = user, Ready = false, Email = email, ConnectionId = Context.ConnectionId });
         return Clients.All.SendAsync("JoinLobby", user, email);
     }
 
@@ -55,6 +55,11 @@ public class ChatHub : Hub
                 allReady = "false";
                 break;
             }
+        }
+
+        if(lobby.Players.Count == 1)
+        {
+            allReady = "false";
         }
 
         return Clients.All.SendAsync("Ready", user, email, allReady);
@@ -90,7 +95,15 @@ public class ChatHub : Hub
             lobby.Players.ElementAt(i).Value.yPos = rnd.Next(0, 10);
         }
 
-        return Clients.All.SendAsync("startGame");
+        //create a list of clientids to send to the client
+        List<string> clientIds = new List<string>();
+        for(int i = 0; i < lobby.Players.Count; i++)
+        {
+            clientIds.Add(lobby.Players.ElementAt(i).Value.ConnectionId);
+        }
+
+        return Clients.Clients(clientIds).SendAsync("startGame", lobby.Players);
+        //return Clients.All.SendAsync("startGame");
     }
 }
 
