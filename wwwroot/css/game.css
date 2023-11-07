@@ -1,26 +1,72 @@
 #board {
-	border: 49px solid #462921;
-	width: fit-content;
-	margin: 0 auto;
-	display: grid;
-	grid-gap: 0;
-    grid-template-columns: repeat(9, 70px);
-    grid-template-rows: repeat(9, 70px);
-	grid-auto-flow: row;
+  border: 49px solid #462921;
+  width: fit-content;
+  margin: 0 auto;
+  display: grid;
+  grid-gap: 0;
+  grid-template-columns: repeat(11, 70px);
+  grid-template-rows: repeat(11, 70px);
+  grid-auto-flow: row;
 }
 
-.box {
-    background-image: url('/images/Tile.png');
-    background-size: cover;
-    background-repeat: no-repeat;
+.fries {
+  background-image: url("/images/Fries.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.toilet-paper {
+  background-image: url("/images/ToiletPaper.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.water {
+  background-image: url("/images/Water.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.floor {
+  background-image: url("/images/Tile.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.wall {
+  background-image: url("/images/Wall.png");
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .target {
-	background-color: red;
+  background-color: red;
+}
+
+.door {
+  background-image: url("/images/Door.png");
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 #user {
-    background-image: url('/images/Fries.png');
-    background-size: cover;
-    background-repeat: no-repeat;
+  background-image: url("/images/Fries.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#progress-bar-container {
+  display: none;
+  position: fixed; 
+  top: 50%;
+  left: 40%; 
+  width: 20%; 
+  height: 20px;
+  background-color: #ccc;
+}
+
+#progress-bar {
+  width: 0; /* Start with 0% progress */
+  height: 100%;
+  background-color: #4caf50;
 }
