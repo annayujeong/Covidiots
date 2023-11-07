@@ -1,0 +1,33 @@
+#hud-inventory {
+    width: 100%;
+    display: none;
+    flex-wrap: wrap;
+}
+
+.item-container {
+    width: 25%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: lightgray;
+    border: 5px solid rgba(0, 0, 0, 0.6);
+    position: relative;
+}
+
+.item {
+    width: 60%;
+    height: 60%;
+}
+
+.item-quantity {
+    background-color: grey;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 15px;
+    height: 15px;
+    font-size: 10pt;
+    text-align: center;
+    display: none;
+}
