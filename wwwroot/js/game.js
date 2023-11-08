@@ -1,3 +1,5 @@
+import { setInventoryHud } from './hud.js';
+
 const MAX_TILES = 121;
 const rows = 11;
 const cols = 11;
@@ -105,10 +107,15 @@ document.addEventListener("DOMContentLoaded", function () {
       default:
         break;
     }
-    if (document.getElementById(rows * destX + destY).className === "door") {
+    let destClassName = document.getElementById(rows * destX + destY).className;
+    if (destClassName === "door") {
       if (!isProgressBarActive) {
         showProgressBar();
       }
+    }
+    // Check if the dest block is resource
+    if (items.includes(destClassName)) {
+        storeResource(destClassName, resourceList);
     }
     // Keep the previous position if false
     if (isValidMovement(destX, destY) === false) {
@@ -139,7 +146,7 @@ function showProgressBar() {
   }, doorOpeningSpeed);
 }
 
-switchCellClass = (prevX, prevY, destX, destY) => { 
+const switchCellClass = (prevX, prevY, destX, destY) => { 
   let prevCell = document.getElementById(rows * prevX + prevY);
   let destCell = document.getElementById(rows * destX + destY);
   let tempCell = prevCell.className;
@@ -157,5 +164,29 @@ function isValidMovement(destX, destY) {
   return true;
 }
 
+let resourceList = {};
 
+var connection = new signalR.HubConnectionBuilder()
+	.withUrl("/resourceHub")
+	.build();
 
+connection.on("collectResource", function (resourceName, resourceList) {
+	storeResource(resourceName, resourceList);
+});
+
+connection
+	.start()
+	.then(function () {})
+	.catch(function (err) {
+		return console.error(err.toString());
+	});
+
+function storeResource(resourceName, resourceList) {
+	let value = resourceList[resourceName];
+    if (!value) {
+        resourceList[resourceName] = 1;
+    } else {
+        resourceList[resourceName]++;
+    }
+    setInventoryHud(resourceList);
+}
