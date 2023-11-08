@@ -2,15 +2,19 @@
 
 let currentHudId = null;
 let isHudDisplayed = false;
+let resourceDictionary = {
+    "water": "Water",
+    "toilet-paper": "ToiletPaper",
+    "fries": "Fries",
+};
 
 document.addEventListener("keydown", function (event) {
 	let inputKey = null;
-
 	switch (event.key) {
-		case "s":
+		case "e":
 			inputKey = "hud-stats";
 			break;
-		case "i":
+		case "q":
 			inputKey = "hud-inventory";
 			break;
 		case "m":
@@ -75,28 +79,25 @@ function setStatsHudUI() {
 	thirstProgress.innerText = tempThirst + "%";
 }
 
-function setInventoryHud() {
-	let tempItems = { // TODO: Get this data from the DB
-		Fries: 2,
-		Water: 5,
-		ToiletPaper: 2,
-		Glass: 1,
-	};
+function setInventoryHud(resourceList) {
+    if (!resourceList) {
+        return;
+    }
 	let itemContainers = document.getElementsByClassName("item-container");
-	let itemKeys = Object.keys(tempItems);
+	let itemKeys = Object.keys(resourceList);
 
 	for (let i = 0; i < itemKeys.length; i++) {
-        var itemImage = itemContainers[i].querySelector("img");
-		itemImage.src = "/images/" + itemKeys[i] + ".png";
+		let itemImage = itemContainers[i].querySelector("img");
+		itemImage.src = "/images/" + resourceDictionary[itemKeys[i]] + ".png";
 		itemImage.alt = itemKeys[i];
 
-        let itemQuantity = itemContainers[i].querySelector("span");
-        itemQuantity.innerText = tempItems[itemKeys[i]];
-        itemQuantity.style.display = "inline";
+		let itemQuantity = itemContainers[i].querySelector("span");
+		itemQuantity.innerText = resourceList[itemKeys[i]];
+		itemQuantity.style.display = "inline";
 	}
 }
 
-// TODO: event - when get the resource, action - update DB & progress bar
+// TODO: event - when get the resource, action - update progress bar
 // tempStat.addEventListener("click", () => {
 // 	const currentWidth = tempStat.offsetWidth;
 // 	// Calculate the new width
@@ -105,3 +106,5 @@ function setInventoryHud() {
 // 	// Set the new width
 // 	tempStat.style.width = newWidth + "px";
 // });
+
+export { setInventoryHud };

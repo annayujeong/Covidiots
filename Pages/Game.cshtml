@@ -7,7 +7,10 @@
     <div id="wrapper">
     </div>
 </div>
+@await Html.PartialAsync("Huds/_Hud")
 
 
 <link rel="stylesheet" href="~/css/game.css" />
-<script defer src="~/js/game.js"></script>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script type="module" defer src="~/js/game.js"></script>
+<script type="module" defer src="~/js/hud.js"></script>
