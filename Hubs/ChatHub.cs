@@ -81,6 +81,33 @@ public class ChatHub : Hub
 
     public Task startGame()
     {
+
+        // create a list of coordinates that have been used
+        List<int> availableX = new List<int>();
+        List<int> availableY = new List<int>();
+
+        int squareWidth = 10;
+
+        for(int i = 0; i < squareWidth; i++)
+        {
+            availableX.Add(i);
+            availableY.Add(i);
+        }
+
+        foreach(var player in lobby.Players)
+        {
+            // get a random element from list
+            Random rnd = new Random();
+            int x = rnd.Next(0, availableX.Count);
+            int y = rnd.Next(0, availableY.Count);
+
+            player.Value.X = availableX[x];
+            player.Value.Y = availableY[y];
+
+            availableX.RemoveAt(x);
+            availableY.RemoveAt(y);
+        }
+
         return Clients.All.SendAsync("startGame");
     }
 }
