@@ -1,4 +1,4 @@
-import { collectResource, useItem } from "./hud.js";
+import { updateResource, useItem } from "./hud.js";
 
 const MAX_TILES = 121;
 const MAX_ITEMS = 5;
@@ -77,11 +77,15 @@ function initializeProgressBar() {
 	wrapper.appendChild(progressBarContainer);
 }
 
+let isResource = false;
+let resourceBlock = null;
+
 document.addEventListener("DOMContentLoaded", function () {
 	let prevX = startingX;
 	let prevY = startingY;
 	let destX = prevX;
 	let destY = prevY;
+
 	initializeBoard(prevX, prevY);
 	document.addEventListener("keydown", function (event) {
 		let key = event.key;
@@ -117,18 +121,29 @@ document.addEventListener("DOMContentLoaded", function () {
 				}
 				break;
 		}
-		let destClassName = document.getElementById(
-			rows * destX + destY
-		).className;
-		if (destClassName === "door") {
+
+        // Collect resource if it is resource block and spacebar is pressed
+		if (isResource && key === " ") {
+			collectResource();
+			return;
+		}
+
+		let destBlock = document.getElementById(rows * destX + destY);
+		if (destBlock.className === "door") {
 			if (!isProgressBarActive) {
 				showProgressBar();
 			}
 		}
+
 		// Check if the dest block is resource
-		if (items.includes(destClassName)) {
-			collectResource(destClassName);
+		if (items.includes(destBlock.className)) {
+			isResource = true;
+			resourceBlock = destBlock;
+		} else {
+			isResource = false;
+			resourceBlock = null;
 		}
+
 		// Keep the previous position if false
 		if (isValidMovement(destX, destY) === false) {
 			destX = prevX;
@@ -139,6 +154,18 @@ document.addEventListener("DOMContentLoaded", function () {
 		prevY = destY;
 	});
 });
+
+function collectResource() {
+	Promise.resolve(showProgressBar())
+		.then(function () {
+			updateResource(resourceBlock.className);
+			resourceBlock.className = "floor";
+			isResource = false;
+		})
+		.catch(function (error) {
+			console.error(error);
+		});
+}
 
 function showProgressBar() {
 	progressBar.style.width = "0%"; // Reset the progress bar

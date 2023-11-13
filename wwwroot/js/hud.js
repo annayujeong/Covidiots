@@ -88,7 +88,7 @@ function setStatsHud() {
 	thirstProgress.innerText = thirst + "%";
 }
 
-function collectResource(resourceName) {
+function updateResource(resourceName) {
 	let value = resourceList[resourceName];
 	if (!value) {
 		resourceList[resourceName] = 1;
@@ -166,4 +166,4 @@ function updateStats(statsEffect, statsName) {
 	setStatsHud();
 }
 
-export { collectResource, useItem };
+export { updateResource, useItem };
