@@ -8,6 +8,14 @@ let resourceDictionary = {
     "fries": "Fries",
 };
 
+let resourceList = {};
+let statsList = {
+    health: 50,
+    thirst: 50,
+    hunger: 50,
+};
+let currentLocation = null;
+
 document.addEventListener("keydown", function (event) {
 	let inputKey = null;
 	switch (event.key) {
@@ -56,33 +64,40 @@ document.addEventListener("keydown", function (event) {
 function setCurrentHudUI(hudId) {
 	switch (hudId) {
 		case "hud-stats":
-			setStatsHudUI();
+			setStatsHud();
 		case "hud-inventory":
 			setInventoryHud();
 	}
 }
 
-function setStatsHudUI() {
-	let tempHealth = 60; // TODO: Get this data from the DB
-	let tempHunger = 10;
-	let tempThirst = 100;
+function setStatsHud() {
+	let health = statsList["health"];
+	let hunger = statsList["hunger"];
+	let thirst = statsList["thirst"];
 	let healthProgress = document.getElementById("health-progress");
 	let hungerProgress = document.getElementById("hunger-progress");
 	let thirstProgress = document.getElementById("thirst-progress");
 
-	healthProgress.style.width = tempHealth + "%";
-	hungerProgress.style.width = tempHunger + "%";
-	thirstProgress.style.width = tempThirst + "%";
+	healthProgress.style.width = health + "%";
+	hungerProgress.style.width = hunger + "%";
+	thirstProgress.style.width = thirst + "%";
 
-	healthProgress.innerText = tempHealth + "%";
-	hungerProgress.innerText = tempHunger + "%";
-	thirstProgress.innerText = tempThirst + "%";
+	healthProgress.innerText = health + "%";
+	hungerProgress.innerText = hunger + "%";
+	thirstProgress.innerText = thirst + "%";
 }
 
-function setInventoryHud(resourceList) {
-    if (!resourceList) {
-        return;
+function collectResource(resourceName) {
+	let value = resourceList[resourceName];
+    if (!value) {
+        resourceList[resourceName] = 1;
+    } else {
+        resourceList[resourceName]++;
     }
+    setInventoryHud();
+}
+
+function setInventoryHud() {
 	let itemContainers = document.getElementsByClassName("item-container");
 	let itemKeys = Object.keys(resourceList);
 
@@ -97,14 +112,31 @@ function setInventoryHud(resourceList) {
 	}
 }
 
-// TODO: event - when get the resource, action - update progress bar
-// tempStat.addEventListener("click", () => {
-// 	const currentWidth = tempStat.offsetWidth;
-// 	// Calculate the new width
-// 	const newWidth = currentWidth * 1.1; // increase by 10%
+function useItem(itemIndex) {
+    let item = Object.entries(resourceList)[itemIndex - 1][0];
+    switch (item) {
+        case "toilet-paper":
+            updateStats(10, "health"); // TODO: use const for numbers
+            break;
+        case "fries":
+            updateStats(12, "hunger");
+            break;
+        case "water":
+            updateStats(15, "thirst");
+            break;
+        default:
+            break;
+    }
+    resourceList[item]--;
+    if (item[1] == 0) {
+        delete resourceList[item];
+    }
+    setInventoryHud();
+}
 
-// 	// Set the new width
-// 	tempStat.style.width = newWidth + "px";
-// });
+function updateStats(statsEffect, statsName) {
+    statsList[statsName] = statsList[statsName] + statsEffect;
+    setStatsHud();
+}
 
-export { setInventoryHud };
+export { collectResource, useItem };
