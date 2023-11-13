@@ -16,11 +16,26 @@ connection.on("JoinLobby", (name, email) =>
 {
     let ul = document.getElementById("playersList");
     ul.innerHTML += `<li id="${email}">${name}</li>`;
+
+    document.getElementById("startButton").disabled = true;
 })
 
 connection.on("LeaveLobby", (user, email) =>
 {   
     document.getElementById(email).remove();
+
+    let li = document.getElementById("playersList");
+
+    if(li.children.length <= 1)
+    {
+        document.getElementById("startButton").disabled = true;
+    }
+    else
+    {
+        document.getElementById("startButton").disabled = false;
+    }
+
+
 })
 
 connection.on("Ready", (user, email, allReady) =>
@@ -88,7 +103,11 @@ function leaveButton()
     let button = document.getElementById("joinButton");
     button.onclick = joinButton;
     button.innerHTML = "Join Lobby";
-    document.getElementById("readyButton").disabled = true;
+
+    let readybutton = document.getElementById("readyButton");
+    readybutton.onclick = readyButton;
+    readybutton.innerHTML = "Ready";
+    readybutton.disabled = true;
 }
 
 function readyButton()

@@ -10,6 +10,7 @@ namespace Covidiots.Hubs
     {
         public override Task OnConnectedAsync()
         {
+            
             return base.OnConnectedAsync();
         }
 
@@ -20,7 +21,10 @@ namespace Covidiots.Hubs
 
         public Task playerMove(string email, string prevX, string prevY, string destX, string destY)
         {
-            return Clients.All.SendAsync("playerMove", email, prevX, prevY, destX, destY);
+            Clients.Caller.SendAsync("update");
+            return Clients.Others.SendAsync("playerMove", email, x, y);
         }
+
+        
     }
 }

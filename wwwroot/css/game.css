@@ -43,6 +43,11 @@
   background-color: red;
 }
 
+.otherPlayer
+{
+  background-color: #4caf50;
+}
+
 .door {
   background-image: url("/images/Door.png");
   background-size: cover;

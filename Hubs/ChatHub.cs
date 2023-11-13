@@ -28,7 +28,7 @@ public class ChatHub : Hub
 
     public Task JoinLobby(string user, string email)
     {
-        lobby.Players.Add(email, new Player() { Name = user, Ready = false, Email = email });
+        lobby.Players.Add(email, new Player() { Name = user, Ready = false, Email = email, ConnectionId = Context.ConnectionId });
         return Clients.All.SendAsync("JoinLobby", user, email);
     }
 
@@ -57,6 +57,11 @@ public class ChatHub : Hub
             }
         }
 
+        if(lobby.Players.Count == 1)
+        {
+            allReady = "false";
+        }
+
         return Clients.All.SendAsync("Ready", user, email, allReady);
     }
 
@@ -80,35 +85,24 @@ public class ChatHub : Hub
     }
 
     public Task startGame()
-    {
-
-        // create a list of coordinates that have been used
-        List<int> availableX = new List<int>();
-        List<int> availableY = new List<int>();
-
-        int squareWidth = 10;
-
-        for(int i = 0; i < squareWidth; i++)
+    {        
+        //assign all players in lobby a random x and y position from 0 - 9
+        Random rnd = new Random();
+        for(int i = 0; i < lobby.Players.Count; i++)
         {
-            availableX.Add(i);
-            availableY.Add(i);
+            lobby.Players.ElementAt(i).Value.xPos = rnd.Next(0, 10);
+            lobby.Players.ElementAt(i).Value.yPos = rnd.Next(0, 10);
         }
 
-        foreach(var player in lobby.Players)
+        //create a list of clientids to send to the client
+        List<string> clientIds = new List<string>();
+        for(int i = 0; i < lobby.Players.Count; i++)
         {
-            // get a random element from list
-            Random rnd = new Random();
-            int x = rnd.Next(0, availableX.Count);
-            int y = rnd.Next(0, availableY.Count);
-
-            player.Value.X = availableX[x];
-            player.Value.Y = availableY[y];
-
-            availableX.RemoveAt(x);
-            availableY.RemoveAt(y);
+            clientIds.Add(lobby.Players.ElementAt(i).Value.ConnectionId);
         }
 
-        return Clients.All.SendAsync("startGame");
+        return Clients.Clients(clientIds).SendAsync("startGame", lobby.Players);
+        //return Clients.All.SendAsync("startGame");
     }
 }
 
