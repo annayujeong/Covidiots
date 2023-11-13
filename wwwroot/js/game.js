@@ -1,6 +1,7 @@
-import { setInventoryHud } from './hud.js';
+import { collectResource, useItem } from './hud.js';
 
 const MAX_TILES = 121;
+const MAX_ITEMS = 5;
 const rows = 11;
 const cols = 11;
 const initialValue = 0;
@@ -48,7 +49,9 @@ function initializeBoard(posX, posY) {
   initializeProgressBar();
   let target = document.getElementById(rows * posX + posY);
   target.className = "target";
-  placeItemRandomlyOnBoard();
+  for (let i = 0; i < MAX_ITEMS; i++) {
+    placeItemRandomlyOnBoard();
+  }
 }
 
 function placeItemRandomlyOnBoard() {
@@ -105,6 +108,10 @@ document.addEventListener("DOMContentLoaded", function () {
         destY += 1;
         break;
       default:
+        // Use number keys to use items
+        if (!isNaN(key) && key >= 1 && key <= 8) {
+            useItem(key);
+        }
         break;
     }
     let destClassName = document.getElementById(rows * destX + destY).className;
@@ -115,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     // Check if the dest block is resource
     if (items.includes(destClassName)) {
-        storeResource(destClassName, resourceList);
+        collectResource(destClassName);
     }
     // Keep the previous position if false
     if (isValidMovement(destX, destY) === false) {
@@ -162,31 +169,4 @@ function isValidMovement(destX, destY) {
     return false;
   }
   return true;
-}
-
-let resourceList = {};
-
-var connection = new signalR.HubConnectionBuilder()
-	.withUrl("/resourceHub")
-	.build();
-
-connection.on("collectResource", function (resourceName, resourceList) {
-	storeResource(resourceName, resourceList);
-});
-
-connection
-	.start()
-	.then(function () {})
-	.catch(function (err) {
-		return console.error(err.toString());
-	});
-
-function storeResource(resourceName, resourceList) {
-	let value = resourceList[resourceName];
-    if (!value) {
-        resourceList[resourceName] = 1;
-    } else {
-        resourceList[resourceName]++;
-    }
-    setInventoryHud(resourceList);
 }

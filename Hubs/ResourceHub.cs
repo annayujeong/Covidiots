@@ -11,4 +11,9 @@ public class ResourceHub : Hub
     {
         return Clients.All.SendAsync("collectResource", resourceName, resourceList);
     }
+
+    public Task UpdateStats(string statsName, string[] statsList)
+    {
+        return Clients.All.SendAsync("updateStats", statsName, statsList);
+    }
 }
