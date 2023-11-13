@@ -3,16 +3,17 @@
 let currentHudId = null;
 let isHudDisplayed = false;
 let resourceDictionary = {
-    "water": "Water",
-    "toilet-paper": "ToiletPaper",
-    "fries": "Fries",
+	water: "Water",
+	"toilet-paper": "ToiletPaper",
+	fries: "Fries",
 };
 
 let resourceList = {};
 let statsList = {
-    health: 50,
-    thirst: 50,
-    hunger: 50,
+	// TODO: change values
+	health: 50,
+	thirst: 50,
+	hunger: 50,
 };
 let currentLocation = null;
 
@@ -87,24 +88,37 @@ function setStatsHud() {
 	thirstProgress.innerText = thirst + "%";
 }
 
-function collectResource(resourceName) {
+function updateResource(resourceName) {
 	let value = resourceList[resourceName];
-    if (!value) {
-        resourceList[resourceName] = 1;
-    } else {
-        resourceList[resourceName]++;
-    }
-    setInventoryHud();
+	if (!value) {
+		resourceList[resourceName] = 1;
+	} else {
+		resourceList[resourceName]++;
+	}
+	setInventoryHud();
+}
+
+function resetInventoryElements() {
+	var parentDiv = document.getElementById("hud-inventory");
+	var items = parentDiv.querySelectorAll(
+		".item-container img, .item-container span"
+	);
+	items.forEach(function (item) {
+		item.style.display = "none";
+	});
 }
 
 function setInventoryHud() {
 	let itemContainers = document.getElementsByClassName("item-container");
+	resetInventoryElements();
+
 	let itemKeys = Object.keys(resourceList);
 
 	for (let i = 0; i < itemKeys.length; i++) {
 		let itemImage = itemContainers[i].querySelector("img");
 		itemImage.src = "/images/" + resourceDictionary[itemKeys[i]] + ".png";
 		itemImage.alt = itemKeys[i];
+		itemImage.style.display = "inline";
 
 		let itemQuantity = itemContainers[i].querySelector("span");
 		itemQuantity.innerText = resourceList[itemKeys[i]];
@@ -113,30 +127,43 @@ function setInventoryHud() {
 }
 
 function useItem(itemIndex) {
-    let item = Object.entries(resourceList)[itemIndex - 1][0];
-    switch (item) {
-        case "toilet-paper":
-            updateStats(10, "health"); // TODO: use const for numbers
-            break;
-        case "fries":
-            updateStats(12, "hunger");
-            break;
-        case "water":
-            updateStats(15, "thirst");
-            break;
-        default:
-            break;
-    }
-    resourceList[item]--;
-    if (item[1] == 0) {
-        delete resourceList[item];
-    }
-    setInventoryHud();
+	let item = null;
+	try {
+		item = Object.entries(resourceList)[itemIndex - 1][0];
+	} catch {
+		return;
+	}
+	if (!item) {
+		return;
+	}
+	switch (item) {
+		case "toilet-paper":
+			updateStats(10, "health"); // TODO: use const for numbers
+			break;
+		case "fries":
+			updateStats(12, "hunger");
+			break;
+		case "water":
+			updateStats(15, "thirst");
+			break;
+		default:
+			break;
+	}
+	resourceList[item]--;
+	if (resourceList[item] == 0) {
+		delete resourceList[item];
+	}
+	setInventoryHud();
 }
 
 function updateStats(statsEffect, statsName) {
-    statsList[statsName] = statsList[statsName] + statsEffect;
-    setStatsHud();
+	let updatedValue = statsList[statsName] + statsEffect;
+	if (updatedValue >= 100) {
+		statsList[statsName] = 100;
+	} else {
+		statsList[statsName] = updatedValue;
+	}
+	setStatsHud();
 }
 
-export { collectResource, useItem };
+export { updateResource, useItem };
