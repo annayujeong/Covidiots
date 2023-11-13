@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Covidiots.Hubs
 {
-    public class GameHub : Hub 
+    public class GameHub : Hub
     {
         public override Task OnConnectedAsync()
         {
-            
+
             return base.OnConnectedAsync();
         }
 
@@ -25,6 +25,14 @@ namespace Covidiots.Hubs
             return Clients.Others.SendAsync("playerMove", email, x, y);
         }
 
-        
+        public Task LocateResources()
+        {
+            return Clients.Others.SendAsync("locateResources");
+        }
+
+        public Task UpdateReoursesStatus()
+        {
+            return Clients.Others.SendAsync("updateReoursesStatus");
+        }
     }
 }
