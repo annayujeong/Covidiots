@@ -1,0 +1,9 @@
+<link rel="stylesheet" href="~/@(nameof(Covidiots)).styles.css" />
+
+<div id="hud">
+    @await Html.PartialAsync("Huds/_StatsHud")
+    @await Html.PartialAsync("Huds/_InventoryHud")
+    @await Html.PartialAsync("Huds/_MapHud")
+</div>
+
+<script defer src="~/js/hud.js"></script>

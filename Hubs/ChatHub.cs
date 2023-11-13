@@ -85,8 +85,7 @@ public class ChatHub : Hub
     }
 
     public Task startGame()
-    {
-        
+    {        
         //assign all players in lobby a random x and y position from 0 - 9
         Random rnd = new Random();
         for(int i = 0; i < lobby.Players.Count; i++)

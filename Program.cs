@@ -54,7 +54,6 @@ app.MapRazorPages();
 
 app.MapHub<ChatHub>("/chatHub");
 app.MapHub<GameHub>("/gameHub");
-
-
+app.MapHub<ResourceHub>("/resourceHub");
 
 app.Run();

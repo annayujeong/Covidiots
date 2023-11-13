@@ -12,6 +12,7 @@
     <div id="wrapper">
     </div>
 </div>
+@await Html.PartialAsync("Huds/_Hud")
 
 <p id="players" hidden=true>
     @JsonSerializer.Serialize(lobby.Players);
@@ -21,3 +22,5 @@
 
 <link rel="stylesheet" href="~/css/game.css" />
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script type="module" defer src="~/js/game.js"></script>
+<script type="module" defer src="~/js/hud.js"></script>
