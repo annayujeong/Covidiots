@@ -4,7 +4,6 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
 let players;
 
 const MAX_TILES = 121;
-const MAX_ITEMS = 5;
 const rows = 11;
 const cols = 11;
 const doorOpeningSpeed = 20; // in milliseconds per 1% of the progress bar width
@@ -16,6 +15,7 @@ const items = ["fries", "toilet-paper", "water"];
 let progressBarContainer = document.createElement("div");
 let progressBar = document.createElement("div");
 let isProgressBarActive = false;
+let floorArray = [];
 
 function initializeBoard(posX, posY) {
 	for (let i = 0; i < MAX_TILES; i++) {
@@ -44,31 +44,31 @@ function initializeBoard(posX, posY) {
 		} else {
 			floor.className = "floor";
 			floor.id = i;
+			floorArray.push(i);
 			wrapper.appendChild(floor);
 		}
 	}
 	wrapper.id = "board";
 	initializeProgressBar();
-	let target = document.getElementById(rows * posX + posY);
+	let targetPosition = rows * posX + posY;
+	let target = document.getElementById(targetPosition);
 	target.className = "target";
-	for (let i = 0; i < MAX_ITEMS; i++) {
-		placeItemRandomlyOnBoard();
-	}
+
+	floorArray = floorArray.filter((item) => item !== targetPosition);
+	connection.invoke("LocateResources", floorArray).catch(function (err) {
+		return console.error(err.toString());
+	});
 }
 
-function placeItemRandomlyOnBoard() {
-	let randomX = Math.floor(Math.random() * rows);
-	let randomY = Math.floor(Math.random() * cols);
-	while (
-		document.getElementById(rows * randomX + randomY).className !== "floor"
-	) {
-		// repeat until a floor tile is found
-		randomX = Math.floor(Math.random() * rows);
-		randomY = Math.floor(Math.random() * cols);
+connection.on("locateResources", (serverRes) => {
+	placeItemRandomlyOnBoard(serverRes);
+});
+
+function placeItemRandomlyOnBoard(serverRes) {
+	for (let resource of serverRes) {
+		let item = document.getElementById(resource["itemPosition"]);
+		item.className = items[resource["itemIndex"]];
 	}
-	let item = document.getElementById(rows * randomX + randomY);
-	let randomItem = Math.floor(Math.random() * items.length);
-	item.className = items[randomItem];
 }
 
 function initializeProgressBar() {
@@ -198,13 +198,22 @@ function collectResource() {
 	Promise.resolve(showProgressBar())
 		.then(function () {
 			updateResource(resourceBlock.className);
-			resourceBlock.className = "floor";
+			connection
+				.invoke("UpdateResources", resourceBlock.id)
+				.catch(function (err) {
+					return console.error(err.toString());
+				});
 			isResource = false;
 		})
 		.catch(function (error) {
 			console.error(error);
 		});
 }
+
+connection.on("updateResource", (id) => {
+    let resBlock = document.getElementById(id);
+    resBlock.className = "floor";
+});
 
 function showProgressBar() {
 	progressBar.style.width = "0%"; // Reset the progress bar
