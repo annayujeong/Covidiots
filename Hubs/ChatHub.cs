@@ -77,10 +77,10 @@ public class ChatHub : Hub
         return base.OnConnectedAsync();
     }
 
-    public override Task OnDisconnectedAsync(Exception? exception)
+    public override async Task<Task> OnDisconnectedAsync(Exception? exception)
     {
+        await Clients.All.SendAsync("LeaveLobby", ScreenName, Context.User.Identity.Name);
         lobby.Players.Remove(Context.User.Identity.Name);
-        Clients.All.SendAsync("LeaveLobby", ScreenName, Context.User.Identity.Name);
         return base.OnDisconnectedAsync(exception);
     }
 
@@ -90,8 +90,8 @@ public class ChatHub : Hub
         Random rnd = new Random();
         for(int i = 0; i < lobby.Players.Count; i++)
         {
-            lobby.Players.ElementAt(i).Value.xPos = rnd.Next(0, 10);
-            lobby.Players.ElementAt(i).Value.yPos = rnd.Next(0, 10);
+            lobby.Players.ElementAt(i).Value.xPos = rnd.Next(1, 9);
+            lobby.Players.ElementAt(i).Value.yPos = rnd.Next(1, 9);
         }
 
         //create a list of clientids to send to the client
