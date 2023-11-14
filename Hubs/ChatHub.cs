@@ -77,10 +77,10 @@ public class ChatHub : Hub
         return base.OnConnectedAsync();
     }
 
-    public override async Task<Task> OnDisconnectedAsync(Exception? exception)
+    public override Task OnDisconnectedAsync(Exception? exception)
     {
-        await Clients.All.SendAsync("LeaveLobby", ScreenName, Context.User.Identity.Name);
         lobby.Players.Remove(Context.User.Identity.Name);
+        Clients.All.SendAsync("LeaveLobby", ScreenName, Context.User.Identity.Name);
         return base.OnDisconnectedAsync(exception);
     }
 
