@@ -4,7 +4,6 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
 let players;
 
 const MAX_TILES = 121;
-const MAX_ITEMS = 5;
 const rows = 11;
 const cols = 11;
 const doorOpeningSpeed = 20; // in milliseconds per 1% of the progress bar width
@@ -16,6 +15,7 @@ const items = ["fries", "toilet-paper", "water"];
 let progressBarContainer = document.createElement("div");
 let progressBar = document.createElement("div");
 let isProgressBarActive = false;
+let floorArray = [];
 
 function initializeBoard(posX, posY) {
 	for (let i = 0; i < MAX_TILES; i++) {
@@ -44,31 +44,31 @@ function initializeBoard(posX, posY) {
 		} else {
 			floor.className = "floor";
 			floor.id = i;
+			floorArray.push(i);
 			wrapper.appendChild(floor);
 		}
 	}
 	wrapper.id = "board";
 	initializeProgressBar();
-	let target = document.getElementById(rows * posX + posY);
+	let targetPosition = rows * posX + posY;
+	let target = document.getElementById(targetPosition);
 	target.className = "target";
-	for (let i = 0; i < MAX_ITEMS; i++) {
-		placeItemRandomlyOnBoard();
-	}
+
+	floorArray = floorArray.filter((item) => item !== targetPosition);
+	connection.invoke("LocateResources", floorArray).catch(function (err) {
+		return console.error(err.toString());
+	});
 }
 
-function placeItemRandomlyOnBoard() {
-	let randomX = Math.floor(Math.random() * rows);
-	let randomY = Math.floor(Math.random() * cols);
-	while (
-		document.getElementById(rows * randomX + randomY).className !== "floor"
-	) {
-		// repeat until a floor tile is found
-		randomX = Math.floor(Math.random() * rows);
-		randomY = Math.floor(Math.random() * cols);
+connection.on("locateResources", (serverRes) => {
+	placeItemRandomlyOnBoard(serverRes);
+});
+
+function placeItemRandomlyOnBoard(serverRes) {
+	for (let resource of serverRes) {
+		let item = document.getElementById(resource["itemPosition"]);
+		item.className = items[resource["itemIndex"]];
 	}
-	let item = document.getElementById(rows * randomX + randomY);
-	let randomItem = Math.floor(Math.random() * items.length);
-	item.className = items[randomItem];
 }
 
 function initializeProgressBar() {
@@ -84,125 +84,136 @@ let isResource = false;
 let resourceBlock = null;
 
 document.addEventListener("DOMContentLoaded", function () {
-  connection.start().then(function ()
-  {
-    players = JSON.parse(document.getElementById("players").innerHTML.slice(0, -2));
-    let player = document.getElementById("user").innerHTML;
+	connection.start().then(function () {
+		players = JSON.parse(
+			document.getElementById("players").innerHTML.slice(0, -2)
+		);
+		let player = document.getElementById("user").innerHTML;
 
-    let prevX;
-    let prevY;
-    if(players[player] != null)
-    {
-      prevX = players[player].xPos;
-      prevY = players[player].yPos;
-    }
-    else
-    {
-      prevX = startingX;
-      prevY = startingY;
-    }
+		let prevX;
+		let prevY;
+		if (players[player] != null) {
+			prevX = players[player].xPos;
+			prevY = players[player].yPos;
+		} else {
+			prevX = startingX;
+			prevY = startingY;
+		}
 
-    let destX = prevX;
-    let destY = prevY;
-    console.log(prevX, prevY)
-    initializeBoard(prevX, prevY);
+		let destX = prevX;
+		let destY = prevY;
+		console.log(prevX, prevY);
+		initializeBoard(prevX, prevY);
 
+		for (let key in players) {
+			let value = players[key];
 
-    for(let key in players)
-    {
-      let value = players[key];
+			if (value.Email != player) {
+				document.getElementById(
+					rows * value.xPos + value.yPos
+				).className = "otherPlayers";
+			}
+		}
 
-      if(value.Email != player)
-      {
-        document.getElementById(rows * value.xPos + value.yPos).className = "otherPlayers";
-      }
-    }
+		document.addEventListener("keydown", function (event) {
+			let key = event.key;
+			if (key === "ArrowUp") {
+				key = "w";
+			}
+			if (key === "ArrowDown") {
+				key = "s";
+			}
+			if (key === "ArrowLeft") {
+				key = "a";
+			}
+			if (key === "ArrowRight") {
+				key = "d";
+			}
+			switch (key) {
+				case "w":
+					destX -= 1;
+					break;
+				case "s":
+					destX += 1;
+					break;
+				case "a":
+					destY -= 1;
+					break;
+				case "d":
+					destY += 1;
+					break;
+				default:
+					// Use number keys to use items
+					if (!isNaN(key) && key >= 1 && key <= 8) {
+						useItem(key);
+					}
+					break;
+			}
 
-    document.addEventListener("keydown", function (event) {
-      let key = event.key;
-      if (key === "ArrowUp") {
-        key = "w";
-      }
-      if (key === "ArrowDown") {
-        key = "s";
-      }
-      if (key === "ArrowLeft") {
-        key = "a";
-      }
-      if (key === "ArrowRight") {
-        key = "d";
-      }
-      switch (key) {
-        case "w":
-          destX -= 1;
-          break;
-        case "s":
-          destX += 1;
-          break;
-        case "a":
-          destY -= 1;
-          break;
-        case "d":
-          destY += 1;
-          break;
-        default:
-          // Use number keys to use items
-          if (!isNaN(key) && key >= 1 && key <= 8) {
-            useItem(key);
-          }
-          break;
-      }
- 
-      // Collect resource if it is resource block and spacebar is pressed
-      if (isResource && key === " ") {
-        collectResource();
-        return;
-      }
+			// Collect resource if it is resource block and spacebar is pressed
+			if (isResource && key === " ") {
+				collectResource();
+				return;
+			}
 
-      let destBlock = document.getElementById(rows * destX + destY);
-      if (destBlock.className === "door") {
-        if (!isProgressBarActive) {
-          showProgressBar();
-        }
-      }
+			let destBlock = document.getElementById(rows * destX + destY);
+			if (destBlock.className === "door") {
+				if (!isProgressBarActive) {
+					showProgressBar();
+				}
+			}
 
-      // Check if the dest block is resource
-      if (items.includes(destBlock.className)) {
-        isResource = true;
-        resourceBlock = destBlock;
-      } else {
-        isResource = false;
-        resourceBlock = null;
-      }
+			// Check if the dest block is resource
+			if (items.includes(destBlock.className)) {
+				isResource = true;
+				resourceBlock = destBlock;
+			} else {
+				isResource = false;
+				resourceBlock = null;
+			}
 
-      // Keep the previous position if false
-      if (isValidMovement(destX, destY) === false) {
-        destX = prevX;
-        destY = prevY;
-      }
-      switchCellClass(prevX, prevY, destX, destY);
-      prevX = destX;
-      prevY = destY;
-      connection.invoke("playerMove", player, destX.toString(), destY.toString()).catch(function (err) {
-        return console.error(err.toString());
-      });
-    
-    });
-
-  });
+			// Keep the previous position if false
+			if (isValidMovement(destX, destY) === false) {
+				destX = prevX;
+				destY = prevY;
+			}
+			switchCellClass(prevX, prevY, destX, destY);
+			prevX = destX;
+			prevY = destY;
+			connection
+				.invoke(
+					"playerMove",
+					player,
+					destX.toString(),
+					destY.toString()
+				)
+				.catch(function (err) {
+					return console.error(err.toString());
+				});
+		});
+	});
 });
 
 function collectResource() {
 	Promise.resolve(showProgressBar())
 		.then(function () {
 			updateResource(resourceBlock.className);
-			resourceBlock.className = "floor";
+			connection
+				.invoke("UpdateResources", resourceBlock.id)
+				.catch(function (err) {
+					return console.error(err.toString());
+				});
 			isResource = false;
 		})
 		.catch(function (error) {
 			console.error(error);
 		});
 }
+
+connection.on("updateResource", (id) => {
+    let resBlock = document.getElementById(id);
+    resBlock.className = "floor";
+});
 
 function showProgressBar() {
 	progressBar.style.width = "0%"; // Reset the progress bar
@@ -241,17 +252,18 @@ function isValidMovement(destX, destY) {
 	return true;
 }
 
-connection.on("playerMove", (playerName, x, y) =>
-{
-  console.log("playerMove");
-  let intX = parseInt(x);
-  let intY = parseInt(y);
-  switchCellClass(players[playerName].xPos, players[playerName].yPos, intX, intY);
-  players[playerName].xPos = intX;
-  players[playerName].yPos = intY;
-})
+connection.on("playerMove", (playerName, x, y) => {
+	console.log("playerMove");
+	let intX = parseInt(x);
+	let intY = parseInt(y);
+	switchCellClass(
+		players[playerName].xPos,
+		players[playerName].yPos,
+		intX,
+		intY
+	);
+	players[playerName].xPos = intX;
+	players[playerName].yPos = intY;
+});
 
-connection.on("update", () =>
-{
-
-})
+connection.on("update", () => {});
