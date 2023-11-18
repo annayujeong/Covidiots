@@ -10,17 +10,20 @@ namespace Covidiots.Hubs;
 public class ChatHub : Hub
 {
     Lobby lobby;
+    Clients clients;
     UserManager<CustomUser> userManager;
     string? ScreenName { get; set; }
 
     private readonly IHttpContextAccessor httpContextAccessor;
 
-    public ChatHub(Lobby lobby, UserManager<CustomUser> userManager, IHttpContextAccessor httpContextAccessor)
+    public ChatHub(Lobby lobby, UserManager<CustomUser> userManager, IHttpContextAccessor httpContextAccessor, Clients clients)
     {
         this.lobby = lobby;
         this.userManager = userManager;
         this.httpContextAccessor = httpContextAccessor;
+        this.clients = clients;
     }
+
     public Task SendMessage(string user, string message)
     {
         return Clients.All.SendAsync("ReceiveMessage", user, message);
@@ -99,9 +102,12 @@ public class ChatHub : Hub
         for(int i = 0; i < lobby.Players.Count; i++)
         {
             clientIds.Add(lobby.Players.ElementAt(i).Value.ConnectionId);
+            clients.Players.Add(lobby.Players.ElementAt(i).Key, lobby.Players.ElementAt(i).Value);
         }
 
-        return Clients.Clients(clientIds).SendAsync("startGame", lobby.Players);
+
+
+        return Clients.Clients(clientIds).SendAsync("startGame");
         //return Clients.All.SendAsync("startGame");
     }
 }

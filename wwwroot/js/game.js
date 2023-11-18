@@ -267,3 +267,8 @@ connection.on("playerMove", (playerName, x, y) => {
 });
 
 connection.on("update", () => {});
+
+connection.on("LeaveGame", (playerKey) => 
+{
+	delete players[playerKey];
+});

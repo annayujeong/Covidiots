@@ -25,6 +25,7 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<Lobby>();
+builder.Services.AddSingleton<Clients>();
 
 builder.Services.AddSession();
 

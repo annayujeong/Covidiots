@@ -2,12 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Covidiots.Data;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Covidiots.Hubs
 {
     public class GameHub : Hub
     {
+        Clients clients;
+
+        public GameHub(Clients clients)
+        {
+            this.clients = clients;
+        }
         public int maxItems = 5;
         public int numberOfItems = 3;
         public static List<Dictionary<string, int>> Resources = new();
@@ -20,6 +27,8 @@ namespace Covidiots.Hubs
 
         public override Task OnDisconnectedAsync(Exception? exception)
         {
+            clients.Players.Remove(Context.User.Identity.Name);
+            Clients.All.SendAsync("LeaveGame", Context.User.Identity.Name);
             return base.OnDisconnectedAsync(exception);
         }
 

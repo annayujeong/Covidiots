@@ -1,5 +1,5 @@
 ﻿@page
-@inject Lobby lobby
+@inject Clients clients
 @inject UserManager<CustomUser> userManager
 @using System.Text.Json
 @model MyApp.Namespace.GameModel
@@ -15,7 +15,7 @@
 @await Html.PartialAsync("Huds/_Hud")
 
 <p id="players" hidden=true>
-    @JsonSerializer.Serialize(lobby.Players);
+    @JsonSerializer.Serialize(clients.Players);
 </p>
 
 <p id="user" hidden=true>@user.Email</p>
