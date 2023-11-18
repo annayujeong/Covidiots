@@ -8,6 +8,27 @@
     var user = await userManager.GetUserAsync(User);
 }
 
+<button id="dialog-button" onclick="dialog.show()">Controls</button>
+
+<dialog id="dialog">
+    <form method="dialog">
+        <div id="dialog-content">
+        <h2 id="dialog-title">Controls</h2>
+        <p id="dialog-message">
+            <ul>
+                <li>WASD - Move</li>
+                <li>Arrow Key - Move</li>
+                <li>E - Stats</li>
+                <li>Q - Inventory</li>
+                <li>M - Map</li>
+                <li>Space Bar - Pickup Item</li>
+            </ul>
+        </p>
+            <input type="submit" value="OK" />
+        </div>
+    </form>
+</dialog>
+
 <div id="container">
     <div id="wrapper">
     </div>
@@ -18,9 +39,12 @@
     @JsonSerializer.Serialize(clients.Players);
 </p>
 
+
+
 <p id="user" hidden=true>@user.Email</p>
 
 <link rel="stylesheet" href="~/css/game.css" />
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
 <script type="module" defer src="~/js/game.js"></script>
 <script type="module" defer src="~/js/hud.js"></script>
+

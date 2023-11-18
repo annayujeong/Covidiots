@@ -75,3 +75,10 @@
   height: 100%;
   background-color: #4caf50;
 }
+
+#dialog-button 
+{
+  margin-left: 45%;
+  font-size: xx-large;
+}
+
