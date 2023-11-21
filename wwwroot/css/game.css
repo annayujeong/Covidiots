@@ -39,7 +39,7 @@
   background-repeat: no-repeat;
 }
 
-.target {
+.player {
   background-image: url("/images/characters/1/character-down.png");
   background-repeat: no-repeat;
   background-size: cover;

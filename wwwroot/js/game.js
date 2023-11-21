@@ -17,7 +17,11 @@ let progressBar = document.createElement("div");
 let isProgressBarActive = false;
 let floorArray = [];
 
-
+// Initializes the board with tiles that have classes of floor, wall, door, or player. It is organized
+// in a 1D array. The board is 11x11, so the 1D array is 121 elements long.
+// Players move around the board by changing the class of the tile. The class of the tile determines
+// what the tile looks like and what the player can do with it.
+// Movement is done by adding x and y coordinates to the player's current position.
 function initializeBoard(posX, posY) {
 	for (let i = 0; i < MAX_TILES; i++) {
 		// populate the board with tiles that can be either floor or wall or door
@@ -51,11 +55,11 @@ function initializeBoard(posX, posY) {
 	}
 	wrapper.id = "board";
 	initializeProgressBar();
-	let targetPosition = rows * posX + posY;	
-	let target = document.getElementById(targetPosition);
-	target.className = "target";
+	let playerPosition = rows * posX + posY;	
+	let player = document.getElementById(playerPosition);
+	player.className = "player";
 
-	floorArray = floorArray.filter((item) => item !== targetPosition);
+	floorArray = floorArray.filter((item) => item !== playerPosition);
 	connection.invoke("LocateResources", floorArray).catch(function (err) {
 		return console.error(err.toString());
 	});
