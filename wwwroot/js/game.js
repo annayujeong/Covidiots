@@ -17,6 +17,7 @@ let progressBar = document.createElement("div");
 let isProgressBarActive = false;
 let floorArray = [];
 
+
 function initializeBoard(posX, posY) {
 	for (let i = 0; i < MAX_TILES; i++) {
 		// populate the board with tiles that can be either floor or wall or door
@@ -89,8 +90,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		players = JSON.parse(
 			document.getElementById("players").innerHTML.slice(0, -2)
 		);
+		
 		let player = document.getElementById("user").innerHTML;
-
 		let prevX;
 		let prevY;
 		if (players[player] != null) {
@@ -100,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			prevX = startingX;
 			prevY = startingY;
 		}
-
+	
 		let destX = prevX;
 		let destY = prevY;
 		console.log(prevX, prevY);
@@ -141,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function () {
 					destY -= 1;
 					break;
 				case "d":
-					destY += 1;
+					destY += 1;	
 					break;
 				default:
 					// Use number keys to use items
@@ -199,7 +200,10 @@ document.addEventListener("DOMContentLoaded", function () {
 				.catch(function (err) {
 					return console.error(err.toString());
 				});
-		});
+			});
+		}).catch(function (err) {
+			return console.error(err.toString());
+
 	});
 });
 
@@ -249,6 +253,25 @@ const switchCellClass = (prevX, prevY, destX, destY) => {
 	let tempCell = prevCell.className;
 	prevCell.className = destCell.className;
 	destCell.className = tempCell;
+	
+
+	// switch background image depending on the direction of movement (Refactor so that other players have a different sprite)
+	if (prevX > destX) {
+		destCell.style.backgroundImage =
+			"url('/images/character1/character-up.png')";
+	} else if (prevX < destX) {
+		destCell.style.backgroundImage =
+			"url('/images/character1/character-down.png')";
+	} else if (prevY > destY) {
+		destCell.style.backgroundImage =
+			"url('/images/character1/character-left.png')";
+	} else if (prevY < destY) {
+		destCell.style.backgroundImage =
+			"url('/images/character1/character-right.png')";
+	}
+	// element style should be removed for the previous cell
+	prevCell.style.backgroundImage = "";
+
 };
 
 function isValidMovement(destX, destY) {
