@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			if (value.Email != player) {
 				document.getElementById(
 					rows * value.xPos + value.yPos
-				).className = "otherPlayer" + value.Email;
+				).className = "otherPlayer";
 			}
 			
 		}
