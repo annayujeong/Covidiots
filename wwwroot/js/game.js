@@ -113,8 +113,9 @@ document.addEventListener("DOMContentLoaded", function () {
 			if (value.Email != player) {
 				document.getElementById(
 					rows * value.xPos + value.yPos
-				).className = "otherPlayer";
+				).className = "otherPlayer" + value.Email;
 			}
+			
 		}
 
 		document.addEventListener("keydown", function (event) {
@@ -253,21 +254,21 @@ const switchCellClass = (prevX, prevY, destX, destY) => {
 	let tempCell = prevCell.className;
 	prevCell.className = destCell.className;
 	destCell.className = tempCell;
-	
+	let baseCharacterURL = "/images/characters/1/"; // temp
 
 	// switch background image depending on the direction of movement (Refactor so that other players have a different sprite)
 	if (prevX > destX) {
-		destCell.style.backgroundImage =
-			"url('/images/character1/character-up.png')";
+		baseCharacterURL += "character-up.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
 	} else if (prevX < destX) {
-		destCell.style.backgroundImage =
-			"url('/images/character1/character-down.png')";
+		baseCharacterURL += "character-down.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
 	} else if (prevY > destY) {
-		destCell.style.backgroundImage =
-			"url('/images/character1/character-left.png')";
+		baseCharacterURL += "character-left.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
 	} else if (prevY < destY) {
-		destCell.style.backgroundImage =
-			"url('/images/character1/character-right.png')";
+		baseCharacterURL += "character-right.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
 	}
 	// element style should be removed for the previous cell
 	prevCell.style.backgroundImage = "";
