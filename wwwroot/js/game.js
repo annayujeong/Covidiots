@@ -50,7 +50,7 @@ function initializeBoard(posX, posY) {
 	}
 	wrapper.id = "board";
 	initializeProgressBar();
-	let targetPosition = rows * posX + posY;
+	let targetPosition = rows * posX + posY;	
 	let target = document.getElementById(targetPosition);
 	target.className = "target";
 
@@ -68,6 +68,7 @@ function placeItemRandomlyOnBoard(serverRes) {
 	for (let resource of serverRes) {
 		let item = document.getElementById(resource["itemPosition"]);
 		item.className = items[resource["itemIndex"]];
+		itemPositions.push(resource["itemPosition"]); // Keep track of item positions
 	}
 }
 
@@ -148,6 +149,14 @@ document.addEventListener("DOMContentLoaded", function () {
 						useItem(key);
 					}
 					break;
+			}
+			while (isProgressBarActive) {
+				// Prevent movement while the progress bar is active
+				destX = prevX;
+				destY = prevY;
+				// check if the progress bar is active every 100ms
+				setTimeout(() => {}, 100);
+				return;
 			}
 
 			// Collect resource if it is resource block and spacebar is pressed
