@@ -139,16 +139,16 @@ document.addEventListener("DOMContentLoaded", function () {
 			}
 			switch (key) {
 				case "w":
-					destX -= 1;
-					break;
-				case "s":
-					destX += 1;
-					break;
-				case "a":
 					destY -= 1;
 					break;
+				case "s":
+					destY += 1;
+					break;
+				case "a":
+					destX -= 1;
+					break;
 				case "d":
-					destY += 1;	
+					destX += 1;	
 					break;
 				default:
 					// Use number keys to use items
@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				return;
 			}
 
-			let destBlock = document.getElementById(rows * destX + destY);
+			let destBlock = document.getElementById(rows * destY + destX);
 			if (destBlock.className === "door") {
 				if (!isProgressBarActive) {
 					showProgressBar();
@@ -216,6 +216,8 @@ document.addEventListener("DOMContentLoaded", function () {
 function collectResource() {
 	Promise.resolve(showProgressBar())
 		.then(function () {
+			// remove background color
+			resourceBlock.style.backgroundColor = "";
 			updateResource(resourceBlock.className);
 			connection
 				.invoke("UpdateResources", resourceBlock.id)
@@ -254,8 +256,8 @@ function showProgressBar() {
 }
 
 const switchCellClass = (prevX, prevY, destX, destY) => {
-	let prevCell = document.getElementById(rows * prevX + prevY);
-	let destCell = document.getElementById(rows * destX + destY);
+	let prevCell = document.getElementById(rows * prevY + prevX);
+	let destCell = document.getElementById(rows * destY + destX);
 	let tempCell = prevCell.className;
 	prevCell.className = destCell.className;
 	destCell.className = tempCell;
@@ -263,16 +265,16 @@ const switchCellClass = (prevX, prevY, destX, destY) => {
 
 	// switch background image depending on the direction of movement (Refactor so that other players have a different sprite)
 	if (prevX > destX) {
-		baseCharacterURL += "character-up.png";
-		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	} else if (prevX < destX) {
-		baseCharacterURL += "character-down.png";
-		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	} else if (prevY > destY) {
 		baseCharacterURL += "character-left.png";
 		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	} else if (prevY < destY) {
+	} else if (prevX < destX) {
 		baseCharacterURL += "character-right.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	} else if (prevY > destY) {
+		baseCharacterURL += "character-up.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	} else if (prevY < destY) {
+		baseCharacterURL += "character-down.png";
 		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
 	}
 	// element style should be removed for the previous cell
@@ -283,7 +285,7 @@ const switchCellClass = (prevX, prevY, destX, destY) => {
 function isValidMovement(destX, destY) {
 	// Prevent movement if colliding outside the grid
 	let permittedCells = ["floor", "door"];
-	let cell = document.getElementById(rows * destX + destY);
+	let cell = document.getElementById(rows * destY + destX);
 	if (!permittedCells.includes(cell.className)) {
 		return false;
 	}
