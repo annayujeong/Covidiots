@@ -69,6 +69,7 @@ function placeItemRandomlyOnBoard(serverRes) {
 	for (let resource of serverRes) {
 		let item = document.getElementById(resource["itemPosition"]);
 		item.className = items[resource["itemIndex"]];
+		item.style.backgroundColor = "gold";
 		itemPositions.push(resource["itemPosition"]); // Keep track of item positions
 	}
 }
