@@ -16,6 +16,7 @@ let progressBarContainer = document.createElement("div");
 let progressBar = document.createElement("div");
 let isProgressBarActive = false;
 let floorArray = [];
+let roomArray = [];
 
 // Initializes the board with tiles that have classes of floor, wall, door, or player. It is organized
 // in a 1D array. The board is 11x11, so the 1D array is 121 elements long.
@@ -109,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	
 		let destX = prevX;
 		let destY = prevY;
-		console.log(prevX, prevY);
+
 		initializeBoard(prevX, prevY);
 
 		for (let key in players) {
@@ -174,8 +175,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			let destBlock = document.getElementById(rows * destY + destX);
 			if (destBlock.className === "door") {
-				if (!isProgressBarActive) {
+				if (!isProgressBarActive) 
+				{
 					showProgressBar();
+
+					if(destX === 5 && destY === 0)
+					{
+						players[player].yRoom = (players[player].yRoom + 1) % 3;
+					}
+					else if(destX === 0 && destY === 5)
+					{
+						players[player].xRoom = (players[player].xRoom - 1) % 3;
+					}
+					else if(destX === 10 && destY === 5)
+					{
+						players[player].xRoom = (players[player].xRoom + 1) % 3;
+					}
+					else if(destX === 5 && destY === 10)
+					{
+						players[player].yRoom = (players[player].yRoom - 1) % 3;
+					}
 				}
 			}
 

@@ -101,6 +101,8 @@ public class ChatHub : Hub
         List<string> clientIds = new List<string>();
         for(int i = 0; i < lobby.Players.Count; i++)
         {
+            lobby.Players.ElementAt(i).Value.yRoom = rnd.Next(1, 3);
+            lobby.Players.ElementAt(i).Value.xRoom = rnd.Next(1, 3);
             clientIds.Add(lobby.Players.ElementAt(i).Value.ConnectionId);
             clients.Players.Add(lobby.Players.ElementAt(i).Key, lobby.Players.ElementAt(i).Value);
         }
