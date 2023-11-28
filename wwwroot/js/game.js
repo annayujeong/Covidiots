@@ -30,8 +30,6 @@ function initializeBoard(posX, posY) {
 	for (let y = 0; y < roomHeight; y++) 
 	{
 		for (let x = 0; x < roomHeight; x++) {
-			count++;
-			
 			let wrapper = document.createElement("div");
 			wrapper.hidden = true;
 
@@ -72,21 +70,20 @@ function initializeBoard(posX, posY) {
 					floor.className = "floor";
 					floor.id = i + " " + x + " " + y;
 				
-					floorArray.push(i * count);
+					floorArray.push(i + " " + x + " " + y);
 					wrapper.appendChild(floor);
 				}
 			}
-			console.log("hello")
+
 			initializeProgressBar(wrapper);
 		}
 		
 	}
-	console.log("hello")
+
 	let playerPosition = rows * posX + posY + " " + user.xRoom + " " + user.yRoom;
 	let player = document.getElementById(playerPosition);
 	player.className = "player";
 
-	console.log(floorArray)
 	floorArray = floorArray.filter((item) => item !== playerPosition);
 	connection.invoke("LocateResources", floorArray).catch(function (err) {
 		return console.error(err.toString());
@@ -98,11 +95,15 @@ connection.on("locateResources", (serverRes) => {
 });
 
 function placeItemRandomlyOnBoard(serverRes) {
-	for (let resource of serverRes) {
+
+	for (let resource of serverRes) 
+	{
 		let item = document.getElementById(resource["itemPosition"]);
+		console.log(item);
 		item.className = items[resource["itemIndex"]];
 		item.style.backgroundColor = "gold";
-		itemPositions.push(resource["itemPosition"]); // Keep track of item positions
+		//this made it not work?
+		//itemPositions.push(resource["itemPosition"]); // Keep track of item positions
 	}
 }
 
