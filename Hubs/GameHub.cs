@@ -62,5 +62,44 @@ namespace Covidiots.Hubs
             Resources.RemoveAll(dictionary => dictionary.TryGetValue("itemPosition", out var value) && value == intValue);
             return Clients.All.SendAsync("updateResource", id);
         }
+        public void InfectPlayers(string destX, string destY)
+        {
+            int centerX = int.Parse(destX);
+            int centerY = int.Parse(destY);
+            Console.WriteLine("centers");
+            Console.WriteLine(centerX);
+            Console.WriteLine(centerY);
+
+            for (int i = centerX - 1; i <= centerX + 1; i++)
+            {
+                for (int j = centerY - 1; j <= centerY + 1; j++)
+                {
+                    // Skip the center point itself
+                    if (i == centerX && j == centerY)
+                        continue;
+
+                    // (i, j) represents the surrounding points
+                    Console.WriteLine($"({i}, {j})");
+                    foreach (KeyValuePair<string, Player> kvp in clients.Players)
+                    {
+                        Console.WriteLine($"{kvp.Key}: {kvp.Value.xPos}");
+                        Console.WriteLine($"{kvp.Key}: {kvp.Value.yPos}");
+                        Console.WriteLine($"{kvp.Key}: {kvp.Value.Name}");
+                        if (kvp.Value.xPos == i && kvp.Value.yPos == j)
+                        {
+                            Console.WriteLine("INFEECTED !!!");
+                            Console.WriteLine(kvp.Value.Name);
+
+                            // name = kvp.Value.Name;
+                            // return Clients.All.SendAsync("getCoughed", "echoo");
+                            Clients.Client(kvp.Value.ConnectionId).SendAsync("getCoughed", "echoo");
+
+                        }
+                        Console.WriteLine("NOO");
+                    }
+                }
+            }
+            // return null;
+        }
     }
 }
