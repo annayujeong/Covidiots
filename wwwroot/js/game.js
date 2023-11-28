@@ -248,22 +248,22 @@ document.addEventListener("DOMContentLoaded", function ()
 
 					if (destX === halfX && destY === 0)
 					{
-						players[player].yRoom ++;
+						user.yRoom ++;
 						destY = 9;
 					}
 					else if (destX === 0 && destY === halfY)
 					{
-						players[player].xRoom --;
+						user.xRoom --;
 						destX = 9;
 					}
 					else if (destX === fullX && destY === halfY)
 					{
-						players[player].xRoom ++;
+						user.xRoom ++;
 						destX = 1;
 					}
 					else if (destX === halfX && destY === fullY)
 					{
-						players[player].yRoom --;
+						user.yRoom --;
 						destY = 1;
 					}
 
@@ -285,8 +285,25 @@ document.addEventListener("DOMContentLoaded", function ()
 			// Keep the previous position if false
 			if (isValidMovement(destX, destY) === false)
 			{
+				if(destX !== prevX || destY !== prevY)
+				{
+					messageElement.innerText = "Door is blocked";
+					messageElement.style.display = "block"; // Show the message
+					setTimeout(function ()
+					{
+						messageElement.style.opacity = "0";
+						// Hide the message after the fade out animation is complete
+						setTimeout(function ()
+						{
+							messageElement.style.display = "none";
+							messageElement.style.opacity = "1";
+						}, 1000); // Assuming the fade out animation takes 1 second
+					}, 100);
+				}
 				destX = prevX;
 				destY = prevY;
+				user.xRoom = xRoomPrev;
+				user.yRoom = yRoomPrev;
 			}
 			prevX = destX;
 			prevY = destY;
@@ -296,8 +313,8 @@ document.addEventListener("DOMContentLoaded", function ()
 					player,
 					destX.toString(),
 					destY.toString(),
-					players[player].xRoom.toString(),
-					players[player].yRoom.toString(),
+					user.xRoom.toString(),
+					user.yRoom.toString(),
 					xRoomPrev.toString(),
 					yRoomPrev.toString()
 				)
