@@ -189,12 +189,12 @@ document.addEventListener("DOMContentLoaded", function ()
 				case "ArrowRight":
 					destY += 1;
 					break;
-				case !isNaN(key):
-					if (key >= 1 && key <= 8)
-					{
+				default:
+					if (!isNaN(key) && key >= 1 && key <= 8) {
+						messageElement.innerText = "You pressed " + key;
+						messageElement.style.display = "block"; // Show the message
 						useItem(key);
 					}
-				default:
 					// print to screen that the key is invalid
 					if (!validKeys.includes(key))
 					{
