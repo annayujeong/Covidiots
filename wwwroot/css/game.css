@@ -1,4 +1,4 @@
-#board {
+.board {
   border: 49px solid #462921;
   width: fit-content;
   margin: 0 auto;
@@ -41,6 +41,17 @@
 
 .target {
   background-color: red;
+  
+}
+
+.player {
+  background-color: red;
+}
+
+
+.otherPlayer
+{
+  background-color: #4caf50;
 }
 
 .door {
@@ -70,3 +81,10 @@
   height: 100%;
   background-color: #4caf50;
 }
+
+#dialog-button 
+{
+  margin-left: 45%;
+  font-size: xx-large;
+}
+

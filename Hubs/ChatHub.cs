@@ -10,17 +10,20 @@ namespace Covidiots.Hubs;
 public class ChatHub : Hub
 {
     Lobby lobby;
+    Clients clients;
     UserManager<CustomUser> userManager;
     string? ScreenName { get; set; }
 
     private readonly IHttpContextAccessor httpContextAccessor;
 
-    public ChatHub(Lobby lobby, UserManager<CustomUser> userManager, IHttpContextAccessor httpContextAccessor)
+    public ChatHub(Lobby lobby, UserManager<CustomUser> userManager, IHttpContextAccessor httpContextAccessor, Clients clients)
     {
         this.lobby = lobby;
         this.userManager = userManager;
         this.httpContextAccessor = httpContextAccessor;
+        this.clients = clients;
     }
+
     public Task SendMessage(string user, string message)
     {
         return Clients.All.SendAsync("ReceiveMessage", user, message);
@@ -28,7 +31,7 @@ public class ChatHub : Hub
 
     public Task JoinLobby(string user, string email)
     {
-        lobby.Players.Add(email, new Player() { Name = user, Ready = false, Email = email });
+        lobby.Players.Add(email, new Player() { Name = user, Ready = false, Email = email, ConnectionId = Context.ConnectionId });
         return Clients.All.SendAsync("JoinLobby", user, email);
     }
 
@@ -57,6 +60,11 @@ public class ChatHub : Hub
             }
         }
 
+        if(lobby.Players.Count == 1)
+        {
+            allReady = "false";
+        }
+
         return Clients.All.SendAsync("Ready", user, email, allReady);
     }
 
@@ -80,35 +88,30 @@ public class ChatHub : Hub
     }
 
     public Task startGame()
-    {
-
-        // create a list of coordinates that have been used
-        List<int> availableX = new List<int>();
-        List<int> availableY = new List<int>();
-
-        int squareWidth = 10;
-
-        for(int i = 0; i < squareWidth; i++)
+    {        
+        //assign all players in lobby a random x and y position from 0 - 9
+        Random rnd = new Random();
+        for(int i = 0; i < lobby.Players.Count; i++)
         {
-            availableX.Add(i);
-            availableY.Add(i);
+            
+            lobby.Players.ElementAt(i).Value.xPos = rnd.Next(1, 9);
+            lobby.Players.ElementAt(i).Value.yPos = rnd.Next(1, 9);
         }
 
-        foreach(var player in lobby.Players)
+        //create a list of clientids to send to the client
+        List<string> clientIds = new List<string>();
+        for(int i = 0; i < lobby.Players.Count; i++)
         {
-            // get a random element from list
-            Random rnd = new Random();
-            int x = rnd.Next(0, availableX.Count);
-            int y = rnd.Next(0, availableY.Count);
-
-            player.Value.X = availableX[x];
-            player.Value.Y = availableY[y];
-
-            availableX.RemoveAt(x);
-            availableY.RemoveAt(y);
+            lobby.Players.ElementAt(i).Value.yRoom = rnd.Next(1, 3);
+            lobby.Players.ElementAt(i).Value.xRoom = rnd.Next(1, 3);
+            clientIds.Add(lobby.Players.ElementAt(i).Value.ConnectionId);
+            clients.Players.Add(lobby.Players.ElementAt(i).Key, lobby.Players.ElementAt(i).Value);
         }
 
-        return Clients.All.SendAsync("startGame");
+
+
+        return Clients.Clients(clientIds).SendAsync("startGame");
+        //return Clients.All.SendAsync("startGame");
     }
 }
 

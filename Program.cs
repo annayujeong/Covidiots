@@ -25,6 +25,7 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<Lobby>();
+builder.Services.AddSingleton<Clients>();
 
 builder.Services.AddSession();
 
@@ -54,6 +55,5 @@ app.MapRazorPages();
 
 app.MapHub<ChatHub>("/chatHub");
 app.MapHub<GameHub>("/gameHub");
-app.MapHub<ResourceHub>("/resourceHub");
 
 app.Run();

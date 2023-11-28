@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Covidiots.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231029193230_M1")]
+    [Migration("20231118184305_M1")]
     partial class M1
     {
         /// <inheritdoc />

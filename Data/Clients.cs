@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 
 namespace Covidiots.Data
 {
-
-    public class Lobby
+    public class Clients
     {
         public Dictionary<string, Player> Players = new();
     }

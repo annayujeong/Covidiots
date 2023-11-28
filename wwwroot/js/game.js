@@ -1,7 +1,9 @@
 import { updateResource, useItem } from "./hud.js";
 
+var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
+let players;
+
 const MAX_TILES = 121;
-const MAX_ITEMS = 5;
 const rows = 11;
 const cols = 11;
 const doorOpeningSpeed = 20; // in milliseconds per 1% of the progress bar width
@@ -13,59 +15,84 @@ const items = ["fries", "toilet-paper", "water"];
 let progressBarContainer = document.createElement("div");
 let progressBar = document.createElement("div");
 let isProgressBarActive = false;
+let floorArray = [];
+let roomArray = [[], [], []];
+let user;
+let roomHeight = 3;
 
 function initializeBoard(posX, posY) {
-	for (let i = 0; i < MAX_TILES; i++) {
-		// populate the board with tiles that can be either floor or wall or door
-		let floor = document.createElement("div");
-		let wall = document.createElement("div");
-		let door = document.createElement("div");
-		// add walls to the outer edges of the board
-		if (
-			i < rows ||
-			i > MAX_TILES - rows ||
-			i % rows === 0 ||
-			i % rows === rows - 1
-		) {
-			// add doors to the middle of the outer edges of the board
-			if (i === 5 || i === 55 || i === 65 || i === MAX_TILES - 6) {
-				// hard code LOL
-				door.className = "door";
-				door.id = i;
-				wrapper.appendChild(door);
-			} else {
-				wall.className = "wall";
-				wall.id = i;
-				wrapper.appendChild(wall);
+	for (let y = 0; y < roomHeight; y++) 
+	{
+		for (let x = 0; x < roomHeight; x++) {
+			
+			let wrapper = document.createElement("div");
+			wrapper.hidden = true;
+
+			if(user.xRoom === x && user.yRoom === y)
+			{
+				wrapper.hidden = false;
 			}
-		} else {
-			floor.className = "floor";
-			floor.id = i;
-			wrapper.appendChild(floor);
+
+			wrapper.className = "board";
+			container.appendChild(wrapper);
+			roomArray[y][x] = wrapper;
+
+			for (let i = 0; i < MAX_TILES; i++) 
+			{
+				// populate the board with tiles that can be either floor or wall or door
+				let floor = document.createElement("div");
+				let wall = document.createElement("div");
+				let door = document.createElement("div");
+				// add walls to the outer edges of the board
+				if (
+					i < rows ||
+					i > MAX_TILES - rows ||
+					i % rows === 0 ||
+					i % rows === rows - 1
+				) {
+					// add doors to the middle of the outer edges of the board
+					if (i === 5 || i === 55 || i === 65 || i === MAX_TILES - 6) {
+						// hard code LOL, haha super awesome good to work with
+						door.className = "door";
+						door.id = i + " " + x + " " + y;
+						wrapper.appendChild(door);
+					} else {
+						wall.className = "wall";
+						wall.id = i + " " + x + " " + y;
+						wrapper.appendChild(wall);
+					}
+				} else {
+					floor.className = "floor";
+					floor.id = i + " " + x + " " + y;
+				
+					floorArray.push(i);
+					wrapper.appendChild(floor);
+				}
+			}
+			initializeProgressBar(wrapper);
 		}
 	}
-	wrapper.id = "board";
-	initializeProgressBar();
-	let target = document.getElementById(rows * posX + posY);
-	target.className = "target";
-	for (let i = 0; i < MAX_ITEMS; i++) {
-		placeItemRandomlyOnBoard();
-	}
+	
+	let playerPosition = rows * posX + posY + " " + user.xRoom + " " + user.yRoom;
+	let player = document.getElementById(playerPosition);
+	player.className = "player";
+	
+	floorArray = floorArray.filter((item) => item !== playerPosition);
+	connection.invoke("LocateResources", floorArray).catch(function (err) {
+		return console.error(err.toString());
+	}); 
 }
 
-function placeItemRandomlyOnBoard() {
-	let randomX = Math.floor(Math.random() * rows);
-	let randomY = Math.floor(Math.random() * cols);
-	while (
-		document.getElementById(rows * randomX + randomY).className !== "floor"
-	) {
-		// repeat until a floor tile is found
-		randomX = Math.floor(Math.random() * rows);
-		randomY = Math.floor(Math.random() * cols);
+connection.on("locateResources", (serverRes) => {
+	placeItemRandomlyOnBoard(serverRes);
+});
+
+function placeItemRandomlyOnBoard(serverRes) {
+	for (let resource of serverRes) {
+		let item = document.getElementById(resource["itemPosition"]);
+		item.className = items[resource["itemIndex"]];
+		itemPositions.push(resource["itemPosition"]); // Keep track of item positions
 	}
-	let item = document.getElementById(rows * randomX + randomY);
-	let randomItem = Math.floor(Math.random() * items.length);
-	item.className = items[randomItem];
 }
 
 function initializeProgressBar() {
@@ -74,84 +101,176 @@ function initializeProgressBar() {
 	progressBarContainer.style.display = "none";
 	progressBar.id = "progress-bar";
 	progressBarContainer.appendChild(progressBar);
-	wrapper.appendChild(progressBarContainer);
+	container.appendChild(progressBarContainer);
 }
 
 let isResource = false;
 let resourceBlock = null;
 
 document.addEventListener("DOMContentLoaded", function () {
-	let prevX = startingX;
-	let prevY = startingY;
-	let destX = prevX;
-	let destY = prevY;
+	connection.start().then(function () {
+		players = JSON.parse(
+			document.getElementById("players").innerHTML.slice(0, -2)
+		);
+		let player = document.getElementById("user").innerHTML;
 
-	initializeBoard(prevX, prevY);
-	document.addEventListener("keydown", function (event) {
-		let key = event.key;
-		if (key === "ArrowUp") {
-			key = "w";
-		}
-		if (key === "ArrowDown") {
-			key = "s";
-		}
-		if (key === "ArrowLeft") {
-			key = "a";
-		}
-		if (key === "ArrowRight") {
-			key = "d";
-		}
-		switch (key) {
-			case "w":
-				destX -= 1;
-				break;
-			case "s":
-				destX += 1;
-				break;
-			case "a":
-				destY -= 1;
-				break;
-			case "d":
-				destY += 1;
-				break;
-			default:
-				// Use number keys to use items
-				if (!isNaN(key) && key >= 1 && key <= 8) {
-					useItem(key);
-				}
-				break;
+		let prevX;
+		let prevY;
+		if (players[player] != null) {
+			prevX = players[player].xPos;
+			prevY = players[player].yPos;
+		} else {
+			prevX = startingX;
+			prevY = startingY;
 		}
 
-        // Collect resource if it is resource block and spacebar is pressed
-		if (isResource && key === " ") {
-			collectResource();
-			return;
-		}
+		let destX = prevX;
+		let destY = prevY;
+		console.log(prevX, prevY);
+		user = players[player];
+		initializeBoard(prevX, prevY);
 
-		let destBlock = document.getElementById(rows * destX + destY);
-		if (destBlock.className === "door") {
-			if (!isProgressBarActive) {
-				showProgressBar();
+		for (let key in players) {
+			let value = players[key];
+
+			if (value.Email != player) {
+				document.getElementById(
+					rows * value.xPos + value.yPos + " " + value.xRoom + " " + value.yRoom
+				).className = "otherPlayers";
 			}
 		}
 
-		// Check if the dest block is resource
-		if (items.includes(destBlock.className)) {
-			isResource = true;
-			resourceBlock = destBlock;
-		} else {
-			isResource = false;
-			resourceBlock = null;
-		}
+		document.addEventListener("keydown", function (event) {
+			let key = event.key;
+			if (key === "ArrowUp") {
+				key = "w";
+			}
+			if (key === "ArrowDown") {
+				key = "s";
+			}
+			if (key === "ArrowLeft") {
+				key = "a";
+			}
+			if (key === "ArrowRight") {
+				key = "d";
+			}
+			switch (key) {
+				case "w":
+					destX -= 1;
+					break;
+				case "s":
+					destX += 1;
+					break;
+				case "a":
+					destY -= 1;
+					break;
+				case "d":
+					destY += 1;
+					break;
+				default:
+					// Use number keys to use items
+					if (!isNaN(key) && key >= 1 && key <= 8) {
+						useItem(key);
+					}
+					break;
+			}
+			while (isProgressBarActive) {
+				// Prevent movement while the progress bar is active
+				destX = prevX;
+				destY = prevY;
+				// check if the progress bar is active every 100ms
+				setTimeout(() => {}, 100);
+				return;
+			}
 
-		// Keep the previous position if false
-		if (isValidMovement(destX, destY) === false) {
-			destX = prevX;
-			destY = prevY;
-		}
-		switchCellClass(prevX, prevY, destX, destY);
-		prevX = destX;
-		prevY = destY;
+			// Collect resource if it is resource block and spacebar is pressed
+			if (isResource && key === " ") {
+				collectResource();
+				return;
+			}
+
+
+			let xRoomPrev = user.xRoom;
+			let yRoomPrev = user.yRoom;
+			
+			let destBlock = document.getElementById(rows * destX + destY + " " + user.xRoom + " " + user.yRoom);
+			if (destBlock.className === "door") {
+				if (!isProgressBarActive) {
+					showProgressBar();
+
+					if(destX === 5 && destY === 0)
+					{
+						players[player].yRoom = (players[player].yRoom + 1) % 3;
+						destY = 9;
+					}
+					else if(destX === 0 && destY === 5)
+					{
+						let x = players[player].xRoom - 1;
+						if(x < 0)
+						{
+							x = 2;
+						}
+						players[player].xRoom = x;
+						destX = 9;
+					}
+					else if(destX === 10 && destY === 5)
+					{
+						players[player].xRoom = (players[player].xRoom + 1) % 3;
+						destX = 1;
+					}
+					else if(destX === 5 && destY === 10)
+					{
+						let y = players[player].yRoom - 1;
+						if(y < 0)
+						{
+							y = 2;
+						}
+						players[player].yRoom = y;
+						destY = 1;
+					}
+
+					destBlock = document.getElementById(rows * destX + destY + " " + user.xRoom + " " + user.yRoom);
+				}
+			}
+
+			// Check if the dest block is resource
+			if (items.includes(destBlock.className)) {
+				isResource = true;
+				resourceBlock = destBlock;
+			} else {
+				isResource = false;
+				resourceBlock = null;
+			}
+
+			// Keep the previous position if false
+			if (isValidMovement(destX, destY) === false) {
+				destX = prevX;
+				destY = prevY;
+			}
+			prevX = destX;
+			prevY = destY;
+			connection
+				.invoke(
+					"playerMove",
+					player,
+					destX.toString(),
+					destY.toString(),
+					players[player].xRoom.toString(),
+					players[player].yRoom.toString(),
+					xRoomPrev.toString(),
+					yRoomPrev.toString()
+				)
+				.catch(function (err) {
+					return console.error(err.toString());
+				});
+						// hide all rooms except the current room
+			for (let y = 0; y < roomHeight; y++) {
+				for (let x = 0; x < roomHeight; x++) {
+					roomArray[y][x].hidden = true;
+				}
+			}
+			roomArray[user.yRoom][user.xRoom].hidden = false;
+		});
 	});
 });
 
@@ -159,13 +278,22 @@ function collectResource() {
 	Promise.resolve(showProgressBar())
 		.then(function () {
 			updateResource(resourceBlock.className);
-			resourceBlock.className = "floor";
+			connection
+				.invoke("UpdateResources", resourceBlock.id)
+				.catch(function (err) {
+					return console.error(err.toString());
+				});
 			isResource = false;
 		})
 		.catch(function (error) {
 			console.error(error);
 		});
 }
+
+connection.on("updateResource", (id) => {
+    let resBlock = document.getElementById(id);
+    resBlock.className = "floor";
+});
 
 function showProgressBar() {
 	progressBar.style.width = "0%"; // Reset the progress bar
@@ -186,9 +314,10 @@ function showProgressBar() {
 	}, doorOpeningSpeed);
 }
 
-const switchCellClass = (prevX, prevY, destX, destY) => {
-	let prevCell = document.getElementById(rows * prevX + prevY);
-	let destCell = document.getElementById(rows * destX + destY);
+const switchCellClass = (prevX, prevY, destX, destY, xRoom, yRoom, xRoomPrev, yRoomPrev) => {
+	let prevCell = document.getElementById(rows * prevX + prevY + " " + xRoomPrev + " " + yRoomPrev);
+	let destCell = document.getElementById(rows * destX + destY + " " + xRoom + " " + yRoom);
+
 	let tempCell = prevCell.className;
 	prevCell.className = destCell.className;
 	destCell.className = tempCell;
@@ -197,9 +326,36 @@ const switchCellClass = (prevX, prevY, destX, destY) => {
 function isValidMovement(destX, destY) {
 	// Prevent movement if colliding outside the grid
 	let permittedCells = ["floor", "door"];
-	let cell = document.getElementById(rows * destX + destY);
+	let cell = document.getElementById(rows * destX + destY + " " + user.xRoom + " " + user.yRoom);
 	if (!permittedCells.includes(cell.className)) {
 		return false;
 	}
 	return true;
 }
+
+connection.on("playerMove", (playerName, x, y, xRoom, yRoom, xRoomPrev, yRoomPrev) => {
+	let intX = parseInt(x);
+	let intY = parseInt(y);
+	switchCellClass(
+		players[playerName].xPos,
+		players[playerName].yPos,
+		intX,
+		intY,
+		xRoom,
+		yRoom,
+		xRoomPrev,
+		yRoomPrev
+	);
+	players[playerName].xRoom = parseInt(xRoom);
+	players[playerName].yRoom = parseInt(yRoom);
+	players[playerName].xPos = intX;
+	players[playerName].yPos = intY;
+	//console.log(playerName + " x:" + players[playerName].xPos + " y:" + players[playerName].yPos + " xRoom:" + players[playerName].xRoom + " yRoom:" + players[playerName].yRoom);
+});
+
+connection.on("update", () => {});
+
+connection.on("LeaveGame", (playerKey) => 
+{
+	delete players[playerKey];
+});

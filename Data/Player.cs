@@ -5,13 +5,16 @@ using System.Threading.Tasks;
 
 namespace Covidiots.Data
 {
-    public class Player
+ public class Player
     {
         public string Name { get; set; }
         public string Email { get; set; }
+        public string ConnectionId { get; set; }
         public bool Ready{ get; set; }
-
-        public int X { get; set; }
-        public int Y { get; set; }
+        public int xPos { get; set; }
+        public int yPos { get; set; }
+        public string currentSprite { get; set; }
+        public int xRoom { get; set; }
+        public int yRoom { get; set; }
     }
 }
