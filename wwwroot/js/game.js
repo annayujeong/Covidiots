@@ -185,16 +185,19 @@ document.addEventListener("DOMContentLoaded", function () {
 					}
 				default:
 					// print to screen that the key is invalid
-					messageElement.innerText = "Invalid key pressed";
-					messageElement.style.display = "block"; // Show the message
-					setTimeout(function() {
-						messageElement.style.opacity = "0";
-						// Hide the message after the fade out animation is complete
+					let validKeys = ["w", "a", "s", "d", "1", "2", "3", "4", "5", "6", "7", "8", "m", "e", "q"];
+					if (!validKeys.includes(key)) {
+						messageElement.innerText = "Invalid key pressed";
+						messageElement.style.display = "block"; // Show the message
 						setTimeout(function() {
-							messageElement.style.display = "none";
-							messageElement.style.opacity = "1";
-						}, 1000); // Assuming the fade out animation takes 1 second
-					}, 100);
+							messageElement.style.opacity = "0";
+							// Hide the message after the fade out animation is complete
+							setTimeout(function() {
+								messageElement.style.display = "none";
+								messageElement.style.opacity = "1";
+							}, 1000); // Assuming the fade out animation takes 1 second
+						}, 100);	
+					}
 					break;
 			}
 			while (isProgressBarActive) {
