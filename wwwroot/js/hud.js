@@ -131,7 +131,7 @@ function useItem(itemIndex) {
 	try {
 		item = Object.entries(resourceList)[itemIndex - 1][0];
 	} catch {
-		return;
+		return false; // If the item doesn't exist, return false (which will be used to display an error message)
 	}
 	if (!item) {
 		return;

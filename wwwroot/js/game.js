@@ -6,7 +6,7 @@ let players;
 const MAX_TILES = 121;
 const rows = 11;
 const cols = 11;
-const doorOpeningSpeed = 2; // in milliseconds per 1% of the progress bar width
+const doorOpeningSpeed = 1; // in milliseconds per 1% of the progress bar width
 const wrapper = document.getElementById("wrapper");
 const startingX = 5;
 const startingY = 5;
@@ -19,6 +19,11 @@ let floorArray = [];
 let roomArray = [[], [], []];
 let user;
 let roomHeight = 3;
+
+const invalidKeyMessage = "Invalid key pressed";
+const usedItemMessage = "You used item ";
+const failUseItemMessage = "You cannot use item ";
+const messageElement = document.getElementById("message");
 
 // Initializes the board with tiles that have classes of floor, wall, door, or player. It is organized
 // in a 1D array. The board is 11x11, so the 1D array is 121 elements long.
@@ -169,7 +174,6 @@ document.addEventListener("DOMContentLoaded", function ()
 		document.addEventListener("keydown", function (event)
 		{
 			let key = event.key;
-			let messageElement = document.getElementById("message");
 
 			switch (key)
 			{
@@ -191,25 +195,21 @@ document.addEventListener("DOMContentLoaded", function ()
 					break;
 				default:
 					if (!isNaN(key) && key >= 1 && key <= 8) {
-						messageElement.innerText = "You pressed " + key;
-						messageElement.style.display = "block"; // Show the message
-						useItem(key);
+
+						let success = useItem(key);
+						if (success === false)
+						{
+							messageElement.innerText = failUseItemMessage + key;
+						} else {
+							messageElement.innerText = usedItemMessage + key;
+						}
+						showMessage();
 					}
 					// print to screen that the key is invalid
 					if (!validKeys.includes(key))
 					{
-						messageElement.innerText = "Invalid key pressed";
-						messageElement.style.display = "block"; // Show the message
-						setTimeout(function ()
-						{
-							messageElement.style.opacity = "0";
-							// Hide the message after the fade out animation is complete
-							setTimeout(function ()
-							{
-								messageElement.style.display = "none";
-								messageElement.style.opacity = "1";
-							}, 1000); // Assuming the fade out animation takes 1 second
-						}, 100);
+						messageElement.innerText = invalidKeyMessage;
+						showMessage();
 					}
 					break;
 			}
@@ -447,3 +447,18 @@ connection.on("LeaveGame", (playerKey) =>
 {
 	delete players[playerKey];
 });
+
+function showMessage()
+{
+	messageElement.style.display = "block"; // Show the message
+	setTimeout(function ()
+	{
+		messageElement.style.opacity = "0";
+		// Hide the message after the fade out animation is complete
+		setTimeout(function ()
+		{
+			messageElement.style.display = "none";
+			messageElement.style.opacity = "1";
+		}, 1000); // Assuming the fade out animation takes 1 second
+	}, 100);
+}
