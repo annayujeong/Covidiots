@@ -6,11 +6,12 @@ let players;
 const MAX_TILES = 121;
 const rows = 11;
 const cols = 11;
-const doorOpeningSpeed = 20; // in milliseconds per 1% of the progress bar width
+const doorOpeningSpeed = 2; // in milliseconds per 1% of the progress bar width
 const wrapper = document.getElementById("wrapper");
 const startingX = 5;
 const startingY = 5;
 const items = ["fries", "toilet-paper", "water"];
+const validKeys = ["w", "a", "s", "d", "1", "2", "3", "4", "5", "6", "7", "8", "m", "e", "q"]; // Update this so that error message is shown properly when invalid key is pressed
 
 let progressBarContainer = document.createElement("div");
 let progressBar = document.createElement("div");
@@ -186,7 +187,6 @@ document.addEventListener("DOMContentLoaded", function () {
 					}
 				default:
 					// print to screen that the key is invalid
-					let validKeys = ["w", "a", "s", "d", "1", "2", "3", "4", "5", "6", "7", "8", "m", "e", "q"];
 					if (!validKeys.includes(key)) {
 						messageElement.innerText = "Invalid key pressed";
 						messageElement.style.display = "block"; // Show the message
@@ -369,7 +369,10 @@ const switchCellClass = (prevX, prevY, destX, destY, xRoom, yRoom, xRoomPrev, yR
 	destCell.style.backgroundSize = "cover";
 	destCell.style.backgroundRepeat = "no-repeat";
 	// element style should be removed for the previous cell
-	prevCell.style.backgroundImage = "";
+	// check if there was any movement before making the previous cell blank
+	if (prevX !== destX || prevY !== destY) {
+		prevCell.style.backgroundImage = "";
+	}
 
 };
 
