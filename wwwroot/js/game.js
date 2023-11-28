@@ -20,6 +20,11 @@ let roomArray = [[], [], []];
 let user;
 let roomHeight = 3;
 
+// Initializes the board with tiles that have classes of floor, wall, door, or player. It is organized
+// in a 1D array. The board is 11x11, so the 1D array is 121 elements long.
+// Players move around the board by changing the class of the tile. The class of the tile determines
+// what the tile looks like and what the player can do with it.
+// Movement is done by adding x and y coordinates to the player's current position.
 function initializeBoard(posX, posY) {
 	let count = 0;
 	for (let y = 0; y < roomHeight; y++) 
@@ -96,6 +101,7 @@ function placeItemRandomlyOnBoard(serverRes) {
 	for (let resource of serverRes) {
 		let item = document.getElementById(resource["itemPosition"]);
 		item.className = items[resource["itemIndex"]];
+		item.style.backgroundColor = "gold";
 		itemPositions.push(resource["itemPosition"]); // Keep track of item positions
 	}
 }
@@ -282,6 +288,8 @@ document.addEventListener("DOMContentLoaded", function () {
 function collectResource() {
 	Promise.resolve(showProgressBar())
 		.then(function () {
+			// remove background color
+			resourceBlock.style.backgroundColor = "";
 			updateResource(resourceBlock.className);
 			connection
 				.invoke("UpdateResources", resourceBlock.id)
@@ -326,6 +334,25 @@ const switchCellClass = (prevX, prevY, destX, destY, xRoom, yRoom, xRoomPrev, yR
 	let tempCell = prevCell.className;
 	prevCell.className = destCell.className;
 	destCell.className = tempCell;
+	let baseCharacterURL = "/images/characters/1/"; // temp
+
+	// switch background image depending on the direction of movement (Refactor so that other players have a different sprite)
+	if (prevX > destX) {
+		baseCharacterURL += "character-left.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	} else if (prevX < destX) {
+		baseCharacterURL += "character-right.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	} else if (prevY > destY) {
+		baseCharacterURL += "character-up.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	} else if (prevY < destY) {
+		baseCharacterURL += "character-down.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	}
+	// element style should be removed for the previous cell
+	prevCell.style.backgroundImage = "";
+
 };
 
 function isValidMovement(destX, destY) {

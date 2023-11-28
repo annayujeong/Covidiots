@@ -39,7 +39,10 @@
   background-repeat: no-repeat;
 }
 
-.target {
+.player {
+  background-image: url("/images/characters/1/character-down.png");
+  background-repeat: no-repeat;
+  background-size: cover;
   background-color: red;
   
 }
@@ -52,6 +55,14 @@
 .otherPlayer
 {
   background-color: #4caf50;
+}
+
+.otherPlayer
+{
+  background-image: url("/images/characters/2/character-down.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-color: green;
 }
 
 .door {
