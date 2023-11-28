@@ -5,10 +5,11 @@ using Covidiots.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var conStr = "Server=tcp:localhost,1444;Database=covidiots;UID=sa;PWD=SqlPassword!;TrustServerCertificate=True;";
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(conStr));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

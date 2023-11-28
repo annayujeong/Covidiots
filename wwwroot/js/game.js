@@ -139,6 +139,11 @@ document.addEventListener("DOMContentLoaded", function () {
 				key = "d";
 			}
 			switch (key) {
+                case "z":
+                    if (players[player].IsInfected) {
+                        handleCoughing(destX, destY);
+                        return;
+                    }
 				case "w":
 					destY -= 1;
 					break;
@@ -311,6 +316,17 @@ function isValidMovement(destX, destY) {
 	return true;
 }
 
+function handleCoughing(x, y) {
+    connection.invoke("InfectPlayers", x.toString(), y.toString()).catch((err) => {
+		return console.error(err.toString());
+	});
+}
+
+connection.on("getCoughed", (e) => {
+    console.log(e)
+    console.log("GOT COUGHED :(")
+});
+
 connection.on("playerMove", (playerName, x, y) => {
 	console.log("playerMove");
 	let intX = parseInt(x);
@@ -331,3 +347,5 @@ connection.on("LeaveGame", (playerKey) =>
 {
 	delete players[playerKey];
 });
+
+export { players };

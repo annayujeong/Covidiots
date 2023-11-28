@@ -16,5 +16,6 @@ namespace Covidiots.Data
         public string currentSprite { get; set; }
         public int xRoom { get; set; }
         public int yRoom { get; set; }
+        public bool IsInfected { get; set; }
     }
 }
