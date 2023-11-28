@@ -24,6 +24,7 @@ const invalidKeyMessage = "Invalid key pressed";
 const usedItemMessage = "You used item ";
 const failUseItemMessage = "You cannot use item ";
 const messageElement = document.getElementById("message");
+const blockedMessage = "Your movement is being blocked";
 
 // Initializes the board with tiles that have classes of floor, wall, door, or player. It is organized
 // in a 1D array. The board is 11x11, so the 1D array is 121 elements long.
@@ -287,18 +288,10 @@ document.addEventListener("DOMContentLoaded", function ()
 			{
 				if(destX !== prevX || destY !== prevY)
 				{
-					messageElement.innerText = "Door is blocked";
-					messageElement.style.display = "block"; // Show the message
-					setTimeout(function ()
-					{
-						messageElement.style.opacity = "0";
-						// Hide the message after the fade out animation is complete
-						setTimeout(function ()
-						{
-							messageElement.style.display = "none";
-							messageElement.style.opacity = "1";
-						}, 1000); // Assuming the fade out animation takes 1 second
-					}, 100);
+					messageElement.innerText = blockedMessage;
+					// append to messageElement depending what is blocking the movement
+					messageElement.innerText += " by " + destBlock.className;
+					showMessage();
 				}
 				destX = prevX;
 				destY = prevY;
@@ -476,6 +469,6 @@ function showMessage()
 		{
 			messageElement.style.display = "none";
 			messageElement.style.opacity = "1";
-		}, 1000); // Assuming the fade out animation takes 1 second
-	}, 100);
+		}, 100);
+	}, 500);
 }
