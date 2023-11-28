@@ -153,6 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		document.addEventListener("keydown", function (event) {
 			let key = event.key;
+			let messageElement = document.getElementById("message");
 			if (key === "ArrowUp") {
 				key = "w";
 			}
@@ -178,11 +179,22 @@ document.addEventListener("DOMContentLoaded", function () {
 				case "d":
 					destY += 1;
 					break;
-				default:
-					// Use number keys to use items
-					if (!isNaN(key) && key >= 1 && key <= 8) {
+				case !isNaN(key):
+					if (key >= 1 && key <= 8) {
 						useItem(key);
 					}
+				default:
+					// print to screen that the key is invalid
+					messageElement.innerText = "Invalid key pressed";
+					messageElement.style.display = "block"; // Show the message
+					setTimeout(function() {
+						messageElement.style.opacity = "0";
+						// Hide the message after the fade out animation is complete
+						setTimeout(function() {
+							messageElement.style.display = "none";
+							messageElement.style.opacity = "1";
+						}, 1000); // Assuming the fade out animation takes 1 second
+					}, 100);
 					break;
 			}
 			while (isProgressBarActive) {
@@ -338,18 +350,20 @@ const switchCellClass = (prevX, prevY, destX, destY, xRoom, yRoom, xRoomPrev, yR
 
 	// switch background image depending on the direction of movement (Refactor so that other players have a different sprite)
 	if (prevX > destX) {
-		baseCharacterURL += "character-left.png";
-		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	} else if (prevX < destX) {
-		baseCharacterURL += "character-right.png";
-		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	} else if (prevY > destY) {
 		baseCharacterURL += "character-up.png";
 		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	} else if (prevY < destY) {
+	} else if (prevX < destX) {
 		baseCharacterURL += "character-down.png";
 		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	} else if (prevY > destY) {
+		baseCharacterURL += "character-left.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	} else if (prevY < destY) {
+		baseCharacterURL += "character-right.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
 	}
+	destCell.style.backgroundSize = "cover";
+	destCell.style.backgroundRepeat = "no-repeat";
 	// element style should be removed for the previous cell
 	prevCell.style.backgroundImage = "";
 
