@@ -15,8 +15,8 @@ namespace Covidiots.Hubs
         {
             this.clients = clients;
         }
-        public int maxItems = 5;
-        public int numberOfItems = 3;
+        public int maxItems = 100;
+        public int numberOfItems = 50;
         public static List<Dictionary<string, int>> Resources = new();
         public static bool didResourceInvoke = false;
 
@@ -53,7 +53,6 @@ namespace Covidiots.Hubs
                 }
                 didResourceInvoke = true;
             }
-
             return Clients.All.SendAsync("locateResources", Resources);
         }
 

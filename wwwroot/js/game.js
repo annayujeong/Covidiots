@@ -21,9 +21,11 @@ let user;
 let roomHeight = 3;
 
 function initializeBoard(posX, posY) {
+	let count = 0;
 	for (let y = 0; y < roomHeight; y++) 
 	{
 		for (let x = 0; x < roomHeight; x++) {
+			count++;
 			
 			let wrapper = document.createElement("div");
 			wrapper.hidden = true;
@@ -65,18 +67,21 @@ function initializeBoard(posX, posY) {
 					floor.className = "floor";
 					floor.id = i + " " + x + " " + y;
 				
-					floorArray.push(i);
+					floorArray.push(i * count);
 					wrapper.appendChild(floor);
 				}
 			}
+			console.log("hello")
 			initializeProgressBar(wrapper);
 		}
+		
 	}
-	
+	console.log("hello")
 	let playerPosition = rows * posX + posY + " " + user.xRoom + " " + user.yRoom;
 	let player = document.getElementById(playerPosition);
 	player.className = "player";
-	
+
+	console.log(floorArray)
 	floorArray = floorArray.filter((item) => item !== playerPosition);
 	connection.invoke("LocateResources", floorArray).catch(function (err) {
 		return console.error(err.toString());
