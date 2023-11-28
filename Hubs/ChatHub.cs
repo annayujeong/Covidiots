@@ -93,6 +93,7 @@ public class ChatHub : Hub
         Random rnd = new Random();
         for(int i = 0; i < lobby.Players.Count; i++)
         {
+            
             lobby.Players.ElementAt(i).Value.xPos = rnd.Next(1, 9);
             lobby.Players.ElementAt(i).Value.yPos = rnd.Next(1, 9);
         }

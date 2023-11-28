@@ -32,10 +32,10 @@ namespace Covidiots.Hubs
             return base.OnDisconnectedAsync(exception);
         }
 
-        public Task playerMove(string email, string x, string y)
+        public Task playerMove(string email, string x, string y, string xRoom, string yRoom, string xRoomPrev, string yRoomPrev)
         {
             Clients.Caller.SendAsync("update");
-            return Clients.Others.SendAsync("playerMove", email, x, y);
+            return Clients.All.SendAsync("playerMove", email, x, y, xRoom, yRoom, xRoomPrev, yRoomPrev);
         }
 
         public Task LocateResources(int[] floorArray)
@@ -53,7 +53,6 @@ namespace Covidiots.Hubs
                 }
                 didResourceInvoke = true;
             }
-
             return Clients.All.SendAsync("locateResources", Resources);
         }
 

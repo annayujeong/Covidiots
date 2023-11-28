@@ -16,7 +16,9 @@ let progressBarContainer = document.createElement("div");
 let progressBar = document.createElement("div");
 let isProgressBarActive = false;
 let floorArray = [];
-let roomArray = [];
+let roomArray = [[], [], []];
+let user;
+let roomHeight = 3;
 
 // Initializes the board with tiles that have classes of floor, wall, door, or player. It is organized
 // in a 1D array. The board is 11x11, so the 1D array is 121 elements long.
@@ -24,46 +26,71 @@ let roomArray = [];
 // what the tile looks like and what the player can do with it.
 // Movement is done by adding x and y coordinates to the player's current position.
 function initializeBoard(posX, posY) {
-	for (let i = 0; i < MAX_TILES; i++) {
-		// populate the board with tiles that can be either floor or wall or door
-		let floor = document.createElement("div");
-		let wall = document.createElement("div");
-		let door = document.createElement("div");
-		// add walls to the outer edges of the board
-		if (
-			i < rows ||
-			i > MAX_TILES - rows ||
-			i % rows === 0 ||
-			i % rows === rows - 1
-		) {
-			// add doors to the middle of the outer edges of the board
-			if (i === 5 || i === 55 || i === 65 || i === MAX_TILES - 6) {
-				// hard code LOL
-				door.className = "door";
-				door.id = i;
-				wrapper.appendChild(door);
-			} else {
-				wall.className = "wall";
-				wall.id = i;
-				wrapper.appendChild(wall);
+	let count = 0;
+	for (let y = 0; y < roomHeight; y++) 
+	{
+		for (let x = 0; x < roomHeight; x++) {
+			count++;
+			
+			let wrapper = document.createElement("div");
+			wrapper.hidden = true;
+
+			if(user.xRoom === x && user.yRoom === y)
+			{
+				wrapper.hidden = false;
 			}
-		} else {
-			floor.className = "floor";
-			floor.id = i;
-			floorArray.push(i);
-			wrapper.appendChild(floor);
+
+			wrapper.className = "board";
+			container.appendChild(wrapper);
+			roomArray[y][x] = wrapper;
+
+			for (let i = 0; i < MAX_TILES; i++) 
+			{
+				// populate the board with tiles that can be either floor or wall or door
+				let floor = document.createElement("div");
+				let wall = document.createElement("div");
+				let door = document.createElement("div");
+				// add walls to the outer edges of the board
+				if (
+					i < rows ||
+					i > MAX_TILES - rows ||
+					i % rows === 0 ||
+					i % rows === rows - 1
+				) {
+					// add doors to the middle of the outer edges of the board
+					if (i === 5 || i === 55 || i === 65 || i === MAX_TILES - 6) {
+						// hard code LOL, haha super awesome good to work with
+						door.className = "door";
+						door.id = i + " " + x + " " + y;
+						wrapper.appendChild(door);
+					} else {
+						wall.className = "wall";
+						wall.id = i + " " + x + " " + y;
+						wrapper.appendChild(wall);
+					}
+				} else {
+					floor.className = "floor";
+					floor.id = i + " " + x + " " + y;
+				
+					floorArray.push(i * count);
+					wrapper.appendChild(floor);
+				}
+			}
+			console.log("hello")
+			initializeProgressBar(wrapper);
 		}
+		
 	}
-	wrapper.id = "board";
-	initializeProgressBar();
-	let playerPosition = rows * posX + posY;	
+	console.log("hello")
+	let playerPosition = rows * posX + posY + " " + user.xRoom + " " + user.yRoom;
 	let player = document.getElementById(playerPosition);
 	player.className = "player";
 
+	console.log(floorArray)
 	floorArray = floorArray.filter((item) => item !== playerPosition);
 	connection.invoke("LocateResources", floorArray).catch(function (err) {
 		return console.error(err.toString());
-	});
+	}); 
 }
 
 connection.on("locateResources", (serverRes) => {
@@ -85,7 +112,7 @@ function initializeProgressBar() {
 	progressBarContainer.style.display = "none";
 	progressBar.id = "progress-bar";
 	progressBarContainer.appendChild(progressBar);
-	wrapper.appendChild(progressBarContainer);
+	container.appendChild(progressBarContainer);
 }
 
 let isResource = false;
@@ -96,8 +123,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		players = JSON.parse(
 			document.getElementById("players").innerHTML.slice(0, -2)
 		);
-		
 		let player = document.getElementById("user").innerHTML;
+
 		let prevX;
 		let prevY;
 		if (players[player] != null) {
@@ -107,10 +134,11 @@ document.addEventListener("DOMContentLoaded", function () {
 			prevX = startingX;
 			prevY = startingY;
 		}
-	
+
 		let destX = prevX;
 		let destY = prevY;
-
+		console.log(prevX, prevY);
+		user = players[player];
 		initializeBoard(prevX, prevY);
 
 		for (let key in players) {
@@ -118,14 +146,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 			if (value.Email != player) {
 				document.getElementById(
-					rows * value.xPos + value.yPos
-				).className = "otherPlayer";
+					rows * value.xPos + value.yPos + " " + value.xRoom + " " + value.yRoom
+				).className = "otherPlayers";
 			}
-			
 		}
 
 		document.addEventListener("keydown", function (event) {
 			let key = event.key;
+			let messageElement = document.getElementById("message");
 			if (key === "ArrowUp") {
 				key = "w";
 			}
@@ -145,21 +173,35 @@ document.addEventListener("DOMContentLoaded", function () {
                         return;
                     }
 				case "w":
-					destY -= 1;
-					break;
-				case "s":
-					destY += 1;
-					break;
-				case "a":
 					destX -= 1;
 					break;
-				case "d":
-					destX += 1;	
+				case "s":
+					destX += 1;
 					break;
-				default:
-					// Use number keys to use items
-					if (!isNaN(key) && key >= 1 && key <= 8) {
+				case "a":
+					destY -= 1;
+					break;
+				case "d":
+					destY += 1;
+					break;
+				case !isNaN(key):
+					if (key >= 1 && key <= 8) {
 						useItem(key);
+					}
+				default:
+					// print to screen that the key is invalid
+					let validKeys = ["w", "a", "s", "d", "1", "2", "3", "4", "5", "6", "7", "8", "m", "e", "q"];
+					if (!validKeys.includes(key)) {
+						messageElement.innerText = "Invalid key pressed";
+						messageElement.style.display = "block"; // Show the message
+						setTimeout(function() {
+							messageElement.style.opacity = "0";
+							// Hide the message after the fade out animation is complete
+							setTimeout(function() {
+								messageElement.style.display = "none";
+								messageElement.style.opacity = "1";
+							}, 1000); // Assuming the fade out animation takes 1 second
+						}, 100);	
 					}
 					break;
 			}
@@ -178,28 +220,47 @@ document.addEventListener("DOMContentLoaded", function () {
 				return;
 			}
 
-			let destBlock = document.getElementById(rows * destY + destX);
+
+			let xRoomPrev = user.xRoom;
+			let yRoomPrev = user.yRoom;
+			
+			let destBlock = document.getElementById(rows * destX + destY + " " + user.xRoom + " " + user.yRoom);
 			if (destBlock.className === "door") {
-				if (!isProgressBarActive) 
-				{
+				if (!isProgressBarActive) {
 					showProgressBar();
 
 					if(destX === 5 && destY === 0)
 					{
 						players[player].yRoom = (players[player].yRoom + 1) % 3;
+						destY = 9;
 					}
 					else if(destX === 0 && destY === 5)
 					{
-						players[player].xRoom = (players[player].xRoom - 1) % 3;
+						let x = players[player].xRoom - 1;
+						if(x < 0)
+						{
+							x = 2;
+						}
+						players[player].xRoom = x;
+						destX = 9;
 					}
 					else if(destX === 10 && destY === 5)
 					{
 						players[player].xRoom = (players[player].xRoom + 1) % 3;
+						destX = 1;
 					}
 					else if(destX === 5 && destY === 10)
 					{
-						players[player].yRoom = (players[player].yRoom - 1) % 3;
+						let y = players[player].yRoom - 1;
+						if(y < 0)
+						{
+							y = 2;
+						}
+						players[player].yRoom = y;
+						destY = 1;
 					}
+
+					destBlock = document.getElementById(rows * destX + destY + " " + user.xRoom + " " + user.yRoom);
 				}
 			}
 
@@ -217,7 +278,6 @@ document.addEventListener("DOMContentLoaded", function () {
 				destX = prevX;
 				destY = prevY;
 			}
-			switchCellClass(prevX, prevY, destX, destY);
 			prevX = destX;
 			prevY = destY;
 			connection
@@ -225,15 +285,23 @@ document.addEventListener("DOMContentLoaded", function () {
 					"playerMove",
 					player,
 					destX.toString(),
-					destY.toString()
+					destY.toString(),
+					players[player].xRoom.toString(),
+					players[player].yRoom.toString(),
+					xRoomPrev.toString(),
+					yRoomPrev.toString()
 				)
 				.catch(function (err) {
 					return console.error(err.toString());
 				});
-			});
-		}).catch(function (err) {
-			return console.error(err.toString());
-
+						// hide all rooms except the current room
+			for (let y = 0; y < roomHeight; y++) {
+				for (let x = 0; x < roomHeight; x++) {
+					roomArray[y][x].hidden = true;
+				}
+			}
+			roomArray[user.yRoom][user.xRoom].hidden = false;
+		});
 	});
 });
 
@@ -279,9 +347,10 @@ function showProgressBar() {
 	}, doorOpeningSpeed);
 }
 
-const switchCellClass = (prevX, prevY, destX, destY) => {
-	let prevCell = document.getElementById(rows * prevY + prevX);
-	let destCell = document.getElementById(rows * destY + destX);
+const switchCellClass = (prevX, prevY, destX, destY, xRoom, yRoom, xRoomPrev, yRoomPrev) => {
+	let prevCell = document.getElementById(rows * prevX + prevY + " " + xRoomPrev + " " + yRoomPrev);
+	let destCell = document.getElementById(rows * destX + destY + " " + xRoom + " " + yRoom);
+
 	let tempCell = prevCell.className;
 	prevCell.className = destCell.className;
 	destCell.className = tempCell;
@@ -289,18 +358,20 @@ const switchCellClass = (prevX, prevY, destX, destY) => {
 
 	// switch background image depending on the direction of movement (Refactor so that other players have a different sprite)
 	if (prevX > destX) {
-		baseCharacterURL += "character-left.png";
-		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	} else if (prevX < destX) {
-		baseCharacterURL += "character-right.png";
-		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	} else if (prevY > destY) {
 		baseCharacterURL += "character-up.png";
 		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	} else if (prevY < destY) {
+	} else if (prevX < destX) {
 		baseCharacterURL += "character-down.png";
 		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	} else if (prevY > destY) {
+		baseCharacterURL += "character-left.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	} else if (prevY < destY) {
+		baseCharacterURL += "character-right.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
 	}
+	destCell.style.backgroundSize = "cover";
+	destCell.style.backgroundRepeat = "no-repeat";
 	// element style should be removed for the previous cell
 	prevCell.style.backgroundImage = "";
 
@@ -309,7 +380,7 @@ const switchCellClass = (prevX, prevY, destX, destY) => {
 function isValidMovement(destX, destY) {
 	// Prevent movement if colliding outside the grid
 	let permittedCells = ["floor", "door"];
-	let cell = document.getElementById(rows * destY + destX);
+	let cell = document.getElementById(rows * destX + destY + " " + user.xRoom + " " + user.yRoom);
 	if (!permittedCells.includes(cell.className)) {
 		return false;
 	}
@@ -327,18 +398,24 @@ connection.on("getCoughed", (e) => {
     console.log("GOT COUGHED :(")
 });
 
-connection.on("playerMove", (playerName, x, y) => {
-	console.log("playerMove");
+connection.on("playerMove", (playerName, x, y, xRoom, yRoom, xRoomPrev, yRoomPrev) => {
 	let intX = parseInt(x);
 	let intY = parseInt(y);
 	switchCellClass(
 		players[playerName].xPos,
 		players[playerName].yPos,
 		intX,
-		intY
+		intY,
+		xRoom,
+		yRoom,
+		xRoomPrev,
+		yRoomPrev
 	);
+	players[playerName].xRoom = parseInt(xRoom);
+	players[playerName].yRoom = parseInt(yRoom);
 	players[playerName].xPos = intX;
 	players[playerName].yPos = intY;
+	//console.log(playerName + " x:" + players[playerName].xPos + " y:" + players[playerName].yPos + " xRoom:" + players[playerName].xRoom + " yRoom:" + players[playerName].yRoom);
 });
 
 connection.on("update", () => {});
