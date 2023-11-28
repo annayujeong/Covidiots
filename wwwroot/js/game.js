@@ -11,8 +11,7 @@ const wrapper = document.getElementById("wrapper");
 const startingX = 5;
 const startingY = 5;
 const items = ["fries", "toilet-paper", "water"];
-const validKeys = ["w", "a", "s", "d", "1", "2", "3", "4", "5", "6", "7", "8", "m", "e", "q"]; // Update this so that error message is shown properly when invalid key is pressed
-
+const validKeys = ["w", "a", "s", "d", "1", "2", "3", "4", "5", "6", "7", "8", "m", "e", "q", " "]; // Update this so that error message is shown properly when invalid key is pressed
 let progressBarContainer = document.createElement("div");
 let progressBar = document.createElement("div");
 let isProgressBarActive = false;
@@ -86,7 +85,7 @@ function initializeBoard(posX, posY) {
 	let playerPosition = rows * posX + posY + " " + user.xRoom + " " + user.yRoom;
 	let player = document.getElementById(playerPosition);
 	player.className = "player";
-
+	player.style.backgroundImage = "url('/images/characters/1/character-down.png')";
 	console.log(floorArray)
 	floorArray = floorArray.filter((item) => item !== playerPosition);
 	connection.invoke("LocateResources", floorArray).catch(function (err) {
@@ -125,7 +124,6 @@ document.addEventListener("DOMContentLoaded", function () {
 			document.getElementById("players").innerHTML.slice(0, -2)
 		);
 		let player = document.getElementById("user").innerHTML;
-
 		let prevX;
 		let prevY;
 		if (players[player] != null) {
@@ -141,16 +139,14 @@ document.addEventListener("DOMContentLoaded", function () {
 		console.log(prevX, prevY);
 		user = players[player];
 		initializeBoard(prevX, prevY);
-
 		for (let key in players) {
 			let value = players[key];
-
 			if (value.Email != player) {
 				document.getElementById(
 					rows * value.xPos + value.yPos + " " + value.xRoom + " " + value.yRoom
 				).className = "otherPlayers";
 			}
-		}
+		}	
 
 		document.addEventListener("keydown", function (event) {
 			let key = event.key;
