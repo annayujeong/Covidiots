@@ -12,6 +12,7 @@ const startingX = 5;
 const startingY = 5;
 const items = ["fries", "toilet-paper", "water"];
 const validKeys = ["w", "a", "s", "d", "1", "2", "3", "4", "5", "6", "7", "8", "m", "e", "q", " "]; // Update this so that error message is shown properly when invalid key is pressed
+const movementKeys = ["w", "a", "s", "d", "ArrowUp", "ArrowLeft", "ArrowDown", "ArrowRight"];
 let progressBarContainer = document.createElement("div");
 let progressBar = document.createElement("div");
 let isProgressBarActive = false;
@@ -174,7 +175,6 @@ document.addEventListener("DOMContentLoaded", function ()
 		document.addEventListener("keydown", function (event)
 		{
 			let key = event.key;
-
 			switch (key)
 			{
 				case "w":
@@ -213,6 +213,13 @@ document.addEventListener("DOMContentLoaded", function ()
 					}
 					break;
 			}
+			if (movementKeys.includes(key))
+			{
+				let destCell = document.getElementById(rows * destX + destY + " " + user.xRoom + " " + user.yRoom);
+				let prevCell = document.getElementById(rows * prevX + prevY + " " + user.xRoom + " " + user.yRoom);
+				changePlayerFacingDirection(key, destCell, prevCell);
+			}
+
 			while (isProgressBarActive)
 			{
 				// Prevent movement while the progress bar is active
@@ -386,8 +393,6 @@ const switchCellClass = (prevX, prevY, destX, destY, xRoom, yRoom, xRoomPrev, yR
 	let tempCell = prevCell.className;
 	prevCell.className = destCell.className;
 	destCell.className = tempCell;
-
-	changePlayerFacingDirection(prevX, prevY, destX, destY, prevCell, destCell);
 };
 
 function isValidMovement(destX, destY)
@@ -444,30 +449,26 @@ function showMessage()
 	}, 500);
 }
 
-function changePlayerFacingDirection(prevX, prevY, destX, destY, prevCell, destCell) 
-{
-	let baseCharacterURL = "/images/characters/1/"; // TODO add function so that other players have a different sprites (1, 2, 3, etc.)
-	// switch background image depending on the direction of movement 
-	if (prevX > destX)
-	{
-		baseCharacterURL += "character-up.png";
+function changePlayerFacingDirection(key, destCell, prevCell) {
+    let baseCharacterURL = "../images/characters/1/"; // to do: change this to the user's character
+    let keyMap = {
+        'ArrowUp': "character-up.png",
+        'ArrowDown': "character-down.png",
+        'ArrowLeft': "character-left.png",
+        'ArrowRight': "character-right.png",
+		'w': "character-up.png",
+		's': "character-down.png",
+		'a': "character-left.png",
+		'd': "character-right.png"
+    };
+    baseCharacterURL += keyMap[key];
+	// check if dest cell is not walkable
+	if (destCell.className === "floor") {
 		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	} else if (prevX < destX)
-	{
-		baseCharacterURL += "character-down.png";
-		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	} else if (prevY > destY)
-	{
-		baseCharacterURL += "character-left.png";
-		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	} else if (prevY < destY)
-	{
-		baseCharacterURL += "character-right.png";
-		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	}
-	// Remove background image if true
-	if (prevX !== destX || prevY !== destY) // checks movement
-	{
-		prevCell.style.backgroundImage = "";
+		if (prevCell) {
+			prevCell.style.backgroundImage = "";
+		}
+	} else {
+		prevCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
 	}
 }
