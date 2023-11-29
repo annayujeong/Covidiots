@@ -15,9 +15,9 @@ namespace Covidiots.Hubs
         {
             this.clients = clients;
         }
-        public int maxItems = 5;
+        public int maxItems = 50;
         public int numberOfItems = 3;
-        public static List<Dictionary<string, int>> Resources = new();
+        public static List<Dictionary<string, string>> Resources = new();
         public static bool didResourceInvoke = false;
 
         public override Task OnConnectedAsync()
@@ -38,7 +38,7 @@ namespace Covidiots.Hubs
             return Clients.All.SendAsync("playerMove", email, x, y, xRoom, yRoom, xRoomPrev, yRoomPrev);
         }
 
-        public Task LocateResources(int[] floorArray)
+        public Task LocateResources(string[] floorArray)
         {
             if (!didResourceInvoke)
             {
@@ -46,9 +46,9 @@ namespace Covidiots.Hubs
 
                 for (int i = 0; i < maxItems; i++)
                 {
-                    Resources.Add(new Dictionary<string, int>{
+                    Resources.Add(new Dictionary<string, string>{
                         { "itemPosition", floorArray[random.Next(floorArray.Length)] },
-                        { "itemIndex", random.Next(numberOfItems) }
+                        { "itemIndex", random.Next(numberOfItems).ToString() }
                     });
                 }
                 didResourceInvoke = true;
@@ -58,8 +58,8 @@ namespace Covidiots.Hubs
 
         public Task UpdateResources(string id)
         {
-            int intValue = int.Parse(id);
-            Resources.RemoveAll(dictionary => dictionary.TryGetValue("itemPosition", out var value) && value == intValue);
+            //int intValue = int.Parse(id);
+            Resources.RemoveAll(dictionary => dictionary.TryGetValue("itemPosition", out var value) && value == id);
             return Clients.All.SendAsync("updateResource", id);
         }
 
