@@ -20,6 +20,8 @@ let floorArray = [];
 let roomArray = [[], [], []];
 let user;
 let roomHeight = 3;
+let isResource = false;
+let resourceBlock = null;
 
 const invalidKeyMessage = "Invalid key pressed";
 const usedItemMessage = "You used item ";
@@ -34,7 +36,6 @@ const blockedMessage = "Your movement is being blocked";
 // Movement is done by adding x and y coordinates to the player's current position.
 function initializeBoard(posX, posY)
 {
-	let count = 0;
 	for (let y = 0; y < roomHeight; y++) 
 	{
 		for (let x = 0; x < roomHeight; x++)
@@ -111,29 +112,22 @@ connection.on("locateResources", (serverRes) =>
 
 function placeItemRandomlyOnBoard(serverRes)
 {
-
 	for (let resource of serverRes) 
 	{
 		let item = document.getElementById(resource["itemPosition"]);
 		item.className = items[resource["itemIndex"]];
 		item.style.backgroundColor = "gold";
-		//this made it not work?
-		//itemPositions.push(resource["itemPosition"]); // Keep track of item positions
 	}
 }
 
 function initializeProgressBar()
 {
-	// Create the progress bar div and hides it by default
 	progressBarContainer.id = "progress-bar-container";
 	progressBarContainer.style.display = "none";
 	progressBar.id = "progress-bar";
 	progressBarContainer.appendChild(progressBar);
 	container.appendChild(progressBarContainer);
 }
-
-let isResource = false;
-let resourceBlock = null;
 
 document.addEventListener("DOMContentLoaded", function ()
 {
@@ -217,16 +211,13 @@ document.addEventListener("DOMContentLoaded", function ()
 
 			while (isProgressBarActive)
 			{
-				// Prevent movement while the progress bar is active
-				destX = prevX;
+				destX = prevX; // Prevent movement if progress bar is active
 				destY = prevY;
-				// check if the progress bar is active every 100ms
-				setTimeout(() => { }, 100);
-				return;
+				setTimeout(() => { }, 100); // Wait for progress bar to finish
+				return; 
 			}
 			
-			// Collect resource if it is resource block and spacebar is pressed
-			if (isResource && key === " ")
+			if (isResource && key === " ") // if the player is in front of a resource and presses spacebar, collect the resource
 			{
 				collectResource();
 				return;
@@ -510,11 +501,10 @@ connection.on("LeaveGame", (playerKey) =>
 
 function showMessage()
 {
-	messageElement.style.display = "block"; // Show the message
+	messageElement.style.display = "block"; 
 	setTimeout(function ()
 	{
 		messageElement.style.opacity = "0";
-		// Hide the message after the fade out animation is complete
 		setTimeout(function ()
 		{
 			messageElement.style.display = "none";
