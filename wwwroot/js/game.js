@@ -156,7 +156,6 @@ document.addEventListener("DOMContentLoaded", function ()
 
 		let destX = prevX;
 		let destY = prevY;
-		console.log(prevX, prevY);
 		user = players[player];
 		initializeBoard(prevX, prevY);
 

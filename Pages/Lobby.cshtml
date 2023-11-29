@@ -61,8 +61,8 @@ var user = await userManager.GetUserAsync(User);
         <hr />
         <ul id="messagesList"></ul>
 
-        <label for="messageInput" id="userInput">@user.ScreenName</label><br>
-        <p hidden="true" id="userEmail">@user.Email</p>
+        <label for="messageInput" id="userInput">@user?.ScreenName</label><br>
+        <p hidden="true" id="userEmail">@user?.Email</p>
         <input type="text" id="messageInput" />
         <input type="button" id="sendButton" value="Send Message" />
     </div>
