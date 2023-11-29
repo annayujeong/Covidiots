@@ -232,13 +232,6 @@ document.addEventListener("DOMContentLoaded", function ()
 				return;
 			}
 
-			if (movementKeys.includes(key))
-			{
-				let destCell = document.getElementById(rows * destX + destY + " " + user.xRoom + " " + user.yRoom);
-				let prevCell = document.getElementById(rows * prevX + prevY + " " + user.xRoom + " " + user.yRoom);
-				changePlayerFacingDirection(key, destCell, prevCell);
-			}
-
 			let xRoomPrev = user.xRoom;
 			let yRoomPrev = user.yRoom;
 
@@ -342,7 +335,7 @@ document.addEventListener("DOMContentLoaded", function ()
 			connection // send the player's movement to the server
 				.invoke( // invoke the playerMove method in the server
 					"playerMove",
-					player,
+					player, 
 					destX.toString(),
 					destY.toString(),
 					user.xRoom.toString(),
@@ -425,6 +418,7 @@ const switchCellClass = (prevX, prevY, destX, destY, xRoom, yRoom, xRoomPrev, yR
 	let tempCell = prevCell.className;
 	prevCell.className = destCell.className;
 	destCell.className = tempCell;
+	changePlayerFacingDirection(prevX, prevY, destX, destY, prevCell, destCell);
 };
 
 function isValidMovement(destX, destY)
@@ -481,26 +475,30 @@ function showMessage()
 	}, 500);
 }
 
-function changePlayerFacingDirection(key, destCell, prevCell) {
-    let baseCharacterURL = "../images/characters/1/"; // to do: change this to the user's character
-    let keyMap = {
-        'ArrowUp': "character-up.png",
-        'ArrowDown': "character-down.png",
-        'ArrowLeft': "character-left.png",
-        'ArrowRight': "character-right.png",
-		'w': "character-up.png",
-		's': "character-down.png",
-		'a': "character-left.png",
-		'd': "character-right.png"
-    };
-    baseCharacterURL += keyMap[key];
-	// check if dest cell is not walkable
-	if (destCell.className === "floor") {
+function changePlayerFacingDirection(prevX, prevY, destX, destY, prevCell, destCell) 
+{
+	let baseCharacterURL = "/images/characters/1/"; // TODO add function so that other players have a different sprites (1, 2, 3, etc.)
+	// switch background image depending on the direction of movement 
+	if (prevX > destX)
+	{
+		baseCharacterURL += "character-up.png";
 		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-		if (prevCell) {
-			prevCell.style.backgroundImage = "";
-		}
-	} else {
-		prevCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	} else if (prevX < destX)
+	{
+		baseCharacterURL += "character-down.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	} else if (prevY > destY)
+	{
+		baseCharacterURL += "character-left.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	} else if (prevY < destY)
+	{
+		baseCharacterURL += "character-right.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	}
+	// Remove background image if true
+	if (prevX !== destX || prevY !== destY) // checks movement
+	{
+		prevCell.style.backgroundImage = "";
 	}
 }
