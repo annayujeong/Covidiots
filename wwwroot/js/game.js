@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function ()
 		players = JSON.parse(
 			document.getElementById("players").innerHTML.slice(0, -2)
 		);
-
+        let player = document.getElementById("user").innerHTML;
 		let prevX;
 		let prevY;
 		if (players[player] != null)
@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function ()
 			{
 				document.getElementById(
 					rows * value.xPos + value.yPos + " " + value.xRoom + " " + value.yRoom
-				).className = "otherPlayer";
+				).className = "otherPlayers";
 			}
 		}	
 
