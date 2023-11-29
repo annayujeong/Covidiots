@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", function ()
 				setTimeout(() => { }, 100);
 				return;
 			}
-
+			
 			// Collect resource if it is resource block and spacebar is pressed
 			if (isResource && key === " ")
 			{
@@ -381,41 +381,14 @@ function showProgressBar()
 
 const switchCellClass = (prevX, prevY, destX, destY, xRoom, yRoom, xRoomPrev, yRoomPrev) =>
 {
-	let prevCell = document.getElementById(rows * prevX + prevY + " " + xRoomPrev + " " + yRoomPrev);
-	let destCell = document.getElementById(rows * destX + destY + " " + xRoom + " " + yRoom);
+	let prevCell = document.getElementById(rows * prevX + prevY + " " + xRoomPrev + " " + yRoomPrev); // Gets the previous cellID
+	let destCell = document.getElementById(rows * destX + destY + " " + xRoom + " " + yRoom); // Gets the destination cellID
 
 	let tempCell = prevCell.className;
 	prevCell.className = destCell.className;
 	destCell.className = tempCell;
-	let baseCharacterURL = "/images/characters/1/"; // temp
 
-	// switch background image depending on the direction of movement (Refactor so that other players have a different sprite)
-	if (prevX > destX)
-	{
-		baseCharacterURL += "character-up.png";
-		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	} else if (prevX < destX)
-	{
-		baseCharacterURL += "character-down.png";
-		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	} else if (prevY > destY)
-	{
-		baseCharacterURL += "character-left.png";
-		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	} else if (prevY < destY)
-	{
-		baseCharacterURL += "character-right.png";
-		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
-	}
-	destCell.style.backgroundSize = "cover";
-	destCell.style.backgroundRepeat = "no-repeat";
-	// element style should be removed for the previous cell
-	// check if there was any movement before making the previous cell blank
-	if (prevX !== destX || prevY !== destY)
-	{
-		prevCell.style.backgroundImage = "";
-	}
-
+	changePlayerFacingDirection(prevX, prevY, destX, destY, prevCell, destCell);
 };
 
 function isValidMovement(destX, destY)
@@ -471,4 +444,32 @@ function showMessage()
 			messageElement.style.opacity = "1";
 		}, 100);
 	}, 500);
+}
+
+function changePlayerFacingDirection(prevX, prevY, destX, destY, prevCell, destCell) 
+{
+	let baseCharacterURL = "/images/characters/1/"; // TODO add function so that other players have a different sprites (1, 2, 3, etc.)
+	// switch background image depending on the direction of movement 
+	if (prevX > destX)
+	{
+		baseCharacterURL += "character-up.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	} else if (prevX < destX)
+	{
+		baseCharacterURL += "character-down.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	} else if (prevY > destY)
+	{
+		baseCharacterURL += "character-left.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	} else if (prevY < destY)
+	{
+		baseCharacterURL += "character-right.png";
+		destCell.style.backgroundImage = "url('" + baseCharacterURL + "')";
+	}
+	// Remove background image if true
+	if (prevX !== destX || prevY !== destY) // checks movement
+	{
+		prevCell.style.backgroundImage = "";
+	}
 }
