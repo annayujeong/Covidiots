@@ -213,12 +213,7 @@ document.addEventListener("DOMContentLoaded", function ()
 					}
 					break;
 			}
-			if (movementKeys.includes(key))
-			{
-				let destCell = document.getElementById(rows * destX + destY + " " + user.xRoom + " " + user.yRoom);
-				let prevCell = document.getElementById(rows * prevX + prevY + " " + user.xRoom + " " + user.yRoom);
-				changePlayerFacingDirection(key, destCell, prevCell);
-			}
+
 
 			while (isProgressBarActive)
 			{
@@ -236,7 +231,13 @@ document.addEventListener("DOMContentLoaded", function ()
 				collectResource();
 				return;
 			}
-
+			
+			if (movementKeys.includes(key))
+			{
+				let destCell = document.getElementById(rows * destX + destY + " " + user.xRoom + " " + user.yRoom);
+				let prevCell = document.getElementById(rows * prevX + prevY + " " + user.xRoom + " " + user.yRoom);
+				changePlayerFacingDirection(key, destCell, prevCell);
+			}
 
 			let xRoomPrev = user.xRoom;
 			let yRoomPrev = user.yRoom;
