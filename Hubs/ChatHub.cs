@@ -44,12 +44,12 @@ public class ChatHub : Hub
     public Task Ready(string user, string email)
     {
         lobby.Players[email].Ready = true;
-        
+
         string allReady = "false";
 
-        for(int i = 0; i < lobby.Players.Count; i++)
+        for (int i = 0; i < lobby.Players.Count; i++)
         {
-            if(lobby.Players.ElementAt(i).Value.Ready == true)
+            if (lobby.Players.ElementAt(i).Value.Ready == true)
             {
                 allReady = "true";
             }
@@ -60,7 +60,7 @@ public class ChatHub : Hub
             }
         }
 
-        if(lobby.Players.Count == 1)
+        if (lobby.Players.Count == 1)
         {
             allReady = "false";
         }
@@ -76,36 +76,64 @@ public class ChatHub : Hub
 
     public override Task OnConnectedAsync()
     {
-        ScreenName = userManager.GetUserAsync(Context.User).Result.ScreenName;
+        if (Context.User != null)
+        {
+            var user = userManager.GetUserAsync(Context.User).Result;
+            if (user != null)
+            {
+                ScreenName = user.ScreenName;
+            }
+        }
         return base.OnConnectedAsync();
     }
 
     public override Task OnDisconnectedAsync(Exception? exception)
     {
-        lobby.Players.Remove(Context.User.Identity.Name);
-        Clients.All.SendAsync("LeaveLobby", ScreenName, Context.User.Identity.Name);
+        if (Context.User?.Identity?.Name != null)
+        {
+            lobby.Players.Remove(Context.User.Identity.Name);
+        }
+
+        if (ScreenName != null && Context.User?.Identity?.Name != null)
+        {
+            Clients.All.SendAsync("LeaveLobby", ScreenName, Context.User.Identity.Name);
+        }
+
         return base.OnDisconnectedAsync(exception);
     }
 
     public Task startGame()
-    {        
+    {
         //assign all players in lobby a random x and y position from 0 - 9
         Random rnd = new Random();
-        for(int i = 0; i < lobby.Players.Count; i++)
+        for (int i = 0; i < lobby.Players.Count; i++)
         {
-            
+
             lobby.Players.ElementAt(i).Value.xPos = rnd.Next(1, 9);
             lobby.Players.ElementAt(i).Value.yPos = rnd.Next(1, 9);
         }
 
         //create a list of clientids to send to the client
         List<string> clientIds = new List<string>();
-        for(int i = 0; i < lobby.Players.Count; i++)
+        for (int i = 0; i < lobby.Players.Count; i++)
         {
-            lobby.Players.ElementAt(i).Value.yRoom = rnd.Next(1, 3);
-            lobby.Players.ElementAt(i).Value.xRoom = rnd.Next(1, 3);
-            clientIds.Add(lobby.Players.ElementAt(i).Value.ConnectionId);
-            clients.Players.Add(lobby.Players.ElementAt(i).Key, lobby.Players.ElementAt(i).Value);
+            var playerValue = lobby.Players.ElementAt(i).Value;
+            var playerKey = lobby.Players.ElementAt(i).Key;
+
+            if (playerValue != null)
+            {
+                playerValue.yRoom = rnd.Next(1, 3);
+                playerValue.xRoom = rnd.Next(1, 3);
+                if (playerValue.ConnectionId != null)
+                {
+                    clientIds.Add(playerValue.ConnectionId);
+                }
+            }
+
+            if (playerKey != null && playerValue != null)
+            {
+                clients.Players.Add(playerKey, playerValue);
+            }
         }
 
         SetInitialInfected();

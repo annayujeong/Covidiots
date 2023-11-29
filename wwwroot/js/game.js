@@ -1,6 +1,6 @@
 import { updateResource, useItem, updateStats } from "./hud.js";
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
+var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build(); // Create a connection to the gameHub
 let players;
 
 const MAX_TILES = 121;
@@ -12,7 +12,7 @@ const startingX = 5;
 const startingY = 5;
 const items = ["fries", "toilet-paper", "water"];
 const validKeys = ["w", "a", "s", "d", "1", "2", "3", "4", "5", "6", "7", "8", "m", "e", "q", " ", "z"]; // Update this so that error message is shown properly when invalid key is pressed
-
+const movementKeys = ["w", "a", "s", "d", "ArrowUp", "ArrowLeft", "ArrowDown", "ArrowRight"];
 let progressBarContainer = document.createElement("div");
 let progressBar = document.createElement("div");
 let isProgressBarActive = false;
@@ -157,7 +157,6 @@ document.addEventListener("DOMContentLoaded", function ()
 
 		let destX = prevX;
 		let destY = prevY;
-		console.log(prevX, prevY);
 		user = players[player];
 		initializeBoard(prevX, prevY);
 
@@ -176,7 +175,6 @@ document.addEventListener("DOMContentLoaded", function ()
 		document.addEventListener("keydown", function (event)
 		{
 			let key = event.key;
-
 			switch (key)
 			{
 				case "w":
@@ -215,6 +213,8 @@ document.addEventListener("DOMContentLoaded", function ()
 					}
 					break;
 			}
+
+
 			while (isProgressBarActive)
 			{
 				// Prevent movement while the progress bar is active
@@ -282,12 +282,44 @@ document.addEventListener("DOMContentLoaded", function ()
 			{
 				isResource = true;
 				resourceBlock = destBlock;
-			} else
+			} 
+			else
 			{
-				isResource = false;
-				resourceBlock = null;
+				// using the last movement, check if the dest block has a resource in front of it
+				let resourceX = destX;
+				let resourceY = destY;
+				switch (key)
+					{
+						case "w":
+						case "ArrowUp":
+							resourceX--;
+							break;
+						case "s":
+						case "ArrowDown":
+							resourceX++;
+							break;
+						case "a":
+						case "ArrowLeft":
+							resourceY--;
+							break;
+						case "d":
+						case "ArrowRight":
+							resourceY++;
+							break;
+					}
+				let potentialResourceBlock = document.getElementById(rows * resourceX + resourceY + " " + user.xRoom + " " + user.yRoom);
+				if (items.includes(potentialResourceBlock.className))
+				{
+					isResource = true;
+					resourceBlock = potentialResourceBlock;
+				} 
+				else 
+				{
+					isResource = false;
+					resourceBlock = null;
+				}
 			}
-
+				
 			// Keep the previous position if false
 			if (isValidMovement(destX, destY) === false)
 			{
@@ -305,10 +337,10 @@ document.addEventListener("DOMContentLoaded", function ()
 			}
 			prevX = destX;
 			prevY = destY;
-			connection
-				.invoke(
+			connection // send the player's movement to the server
+				.invoke( // invoke the playerMove method in the server
 					"playerMove",
-					player,
+					player, 
 					destX.toString(),
 					destY.toString(),
 					user.xRoom.toString(),
@@ -381,12 +413,11 @@ function collectResource() {
 	Promise.resolve(showProgressBar())
 		.then(function ()
 		{
-			// remove background color
-			resourceBlock.style.backgroundColor = "";
-			updateResource(resourceBlock.className);
-			connection
-				.invoke("UpdateResources", resourceBlock.id)
-				.catch(function (err)
+			resourceBlock.style.backgroundColor = ""; // reset the resource block's background color
+			updateResource(resourceBlock.className); // update the resource in the HUD
+			connection // send the resource block's id to the server
+				.invoke("UpdateResources", resourceBlock.id) // invoke the UpdateResources method in the server
+				.catch(function (err) 
 				{
 					return console.error(err.toString());
 				});
@@ -435,7 +466,6 @@ const switchCellClass = (prevX, prevY, destX, destY, xRoom, yRoom, xRoomPrev, yR
 	let tempCell = prevCell.className;
 	prevCell.className = destCell.className;
 	destCell.className = tempCell;
-
 	changePlayerFacingDirection(prevX, prevY, destX, destY, prevCell, destCell);
 };
 
@@ -469,7 +499,6 @@ connection.on("playerMove", (playerName, x, y, xRoom, yRoom, xRoomPrev, yRoomPre
 	players[playerName].yRoom = parseInt(yRoom);
 	players[playerName].xPos = intX;
 	players[playerName].yPos = intY;
-	//console.log(playerName + " x:" + players[playerName].xPos + " y:" + players[playerName].yPos + " xRoom:" + players[playerName].xRoom + " yRoom:" + players[playerName].yRoom);
 });
 
 connection.on("update", () => { });

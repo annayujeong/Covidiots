@@ -27,8 +27,11 @@ namespace Covidiots.Hubs
 
         public override Task OnDisconnectedAsync(Exception? exception)
         {
-            clients.Players.Remove(Context.User.Identity.Name);
-            Clients.All.SendAsync("LeaveGame", Context.User.Identity.Name);
+            if (Context.User?.Identity?.Name != null)
+            {
+                clients.Players.Remove(Context.User.Identity.Name);
+                Clients.All.SendAsync("LeaveGame", Context.User.Identity.Name);
+            }
             return base.OnDisconnectedAsync(exception);
         }
 

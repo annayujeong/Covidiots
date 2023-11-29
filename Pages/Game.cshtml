@@ -4,7 +4,6 @@
 @using System.Text.Json
 @model MyApp.Namespace.GameModel
 @{
-    <script defer src="~/js/game.js"></script>
     var user = await userManager.GetUserAsync(User);
 }
 
@@ -40,7 +39,7 @@
 
 
 
-<p id="user" hidden=true>@user.Email</p>
+<p id="user" hidden=true>@user?.Email</p>
 
 <link rel="stylesheet" href="~/css/game.css" />
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
