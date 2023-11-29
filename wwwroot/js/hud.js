@@ -157,13 +157,18 @@ function useItem(itemIndex) {
 }
 
 function updateStats(statsEffect, statsName) {
+    let isInfected = false;
 	let updatedValue = statsList[statsName] + statsEffect;
 	if (updatedValue >= 100) {
 		statsList[statsName] = 100;
-	} else {
+	} else if (updatedValue <= 0) {
+        statsList[statsName] = 0;
+        isInfected = true;
+    } else {
 		statsList[statsName] = updatedValue;
 	}
 	setStatsHud();
+    return isInfected;
 }
 
-export { updateResource, useItem };
+export { updateResource, useItem, updateStats };

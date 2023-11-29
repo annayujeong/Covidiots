@@ -108,10 +108,17 @@ public class ChatHub : Hub
             clients.Players.Add(lobby.Players.ElementAt(i).Key, lobby.Players.ElementAt(i).Value);
         }
 
-
-
+        SetInitialInfected();
         return Clients.Clients(clientIds).SendAsync("startGame");
         //return Clients.All.SendAsync("startGame");
+    }
+
+     public void SetInitialInfected() {
+        Random random = new Random();
+        int randomIndex = random.Next(clients.Players.Count);
+
+        var infectedUser = clients.Players.ElementAt(randomIndex).Value;
+        infectedUser.IsInfected = true;
     }
 }
 

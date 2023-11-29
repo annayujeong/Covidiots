@@ -62,5 +62,34 @@ namespace Covidiots.Hubs
             Resources.RemoveAll(dictionary => dictionary.TryGetValue("itemPosition", out var value) && value == intValue);
             return Clients.All.SendAsync("updateResource", id);
         }
+
+        public Task InfectPlayers(string xPos, string yPos, string xRoom, string yRoom)
+        {
+            int posX = int.Parse(xPos);
+            int posY = int.Parse(yPos);
+            int roomX = int.Parse(xRoom);
+            int roomY = int.Parse(yRoom);
+            List<string> affectedFloors = new();
+
+            for (int i = posX - 1; i <= posX + 1; i++)
+            {
+                for (int j = posY - 1; j <= posY + 1; j++)
+                {
+                    // Skip the center point itself
+                    if (i == posX && j == posY)
+                        continue;
+
+                    int blockIndex = i * 11 + j;
+                    affectedFloors.Add(blockIndex.ToString() + " " + roomX + " " + roomY);
+                }
+            }
+            return Clients.All.SendAsync("getCoughed", affectedFloors);
+        }
+
+        public Player? GetPlayerByEmail(string email)
+        {
+            KeyValuePair<string, Player> playerEntry = clients.Players.FirstOrDefault(pair => pair.Value.Email == email);
+            return playerEntry.Value;
+        }
     }
 }
