@@ -1,4 +1,4 @@
-import { updateResource, useItem } from "./hud.js";
+import { updateResource, useItem, updateStats } from "./hud.js";
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
 let players;
@@ -11,7 +11,8 @@ const wrapper = document.getElementById("wrapper");
 const startingX = 5;
 const startingY = 5;
 const items = ["fries", "toilet-paper", "water"];
-const validKeys = ["w", "a", "s", "d", "1", "2", "3", "4", "5", "6", "7", "8", "m", "e", "q", " "]; // Update this so that error message is shown properly when invalid key is pressed
+const validKeys = ["w", "a", "s", "d", "1", "2", "3", "4", "5", "6", "7", "8", "m", "e", "q", " ", "z"]; // Update this so that error message is shown properly when invalid key is pressed
+
 let progressBarContainer = document.createElement("div");
 let progressBar = document.createElement("div");
 let isProgressBarActive = false;
@@ -141,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function ()
 		players = JSON.parse(
 			document.getElementById("players").innerHTML.slice(0, -2)
 		);
-		let player = document.getElementById("user").innerHTML;
+        let player = document.getElementById("user").innerHTML;
 		let prevX;
 		let prevY;
 		if (players[player] != null)
@@ -231,6 +232,10 @@ document.addEventListener("DOMContentLoaded", function ()
 				return;
 			}
 
+            if (players[player].IsInfected && key === "z") {
+                handleCoughing();
+                return;
+            }
 
 			let xRoomPrev = user.xRoom;
 			let yRoomPrev = user.yRoom;
@@ -328,8 +333,51 @@ document.addEventListener("DOMContentLoaded", function ()
 	});
 });
 
-function collectResource()
-{
+function handleCoughing() {
+    let player = document.getElementById("user").innerHTML;
+    let xPos = players[player].xPos.toString();
+	let yPos = players[player].yPos.toString();
+	let xRoom = players[player].xRoom.toString();
+	let yRoom = players[player].yRoom.toString();
+    connection.invoke("InfectPlayers", xPos, yPos, xRoom, yRoom).catch((err) => {
+		return console.error(err.toString());
+	});
+}
+
+connection.on("getCoughed", (affectedFloors) => {
+    let player = document.getElementById("user").innerHTML;
+    affectedFloors.forEach((id) => {
+        var element = document.getElementById(id);
+        let virus = document.createElement("img");
+        virus.src = "/images/Virus.png";
+        if (element && element.className !== "door" && element.className !== "wall") {
+            element.appendChild(virus);
+            setTimeout(() => {
+                element.removeChild(virus);
+            }, 2000);
+        }
+    });
+
+    let currentXPos = players[player].xPos;
+    let currentYPos = players[player].yPos;
+    let currentXRoom = players[player].xRoom;
+    let currentYRoom = players[player].yRoom;
+    let currentPos = currentXPos * 11 + currentYPos;
+    let currentPosId = currentPos + " " + currentXRoom + " " + currentYRoom;
+    if (affectedFloors.includes(currentPosId)) {
+        let isHealthEmpty = updateStats(-20, "health"); // TODO: can adjust, use const
+        let isThirstEmpty = updateStats(-20, "thirst");
+        let isHungerEmpty = updateStats(-20, "hunger");
+        console.log(players[player].Name + " GOT COUGHED :(");
+
+        if (isHealthEmpty || isThirstEmpty || isHungerEmpty) {
+            players[player].IsInfected = true;
+            player
+        }
+    }
+});
+
+function collectResource() {
 	Promise.resolve(showProgressBar())
 		.then(function ()
 		{
