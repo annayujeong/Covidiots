@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function ()
 				collectResource();
 				return;
 			}
-			
+
 			if (movementKeys.includes(key))
 			{
 				let destCell = document.getElementById(rows * destX + destY + " " + user.xRoom + " " + user.yRoom);
@@ -284,12 +284,44 @@ document.addEventListener("DOMContentLoaded", function ()
 			{
 				isResource = true;
 				resourceBlock = destBlock;
-			} else
+			} 
+			else
 			{
-				isResource = false;
-				resourceBlock = null;
+				// using the last movement, check if the dest block has a resource in front of it
+				let resourceX = destX;
+				let resourceY = destY;
+				switch (key)
+					{
+						case "w":
+						case "ArrowUp":
+							resourceX--;
+							break;
+						case "s":
+						case "ArrowDown":
+							resourceX++;
+							break;
+						case "a":
+						case "ArrowLeft":
+							resourceY--;
+							break;
+						case "d":
+						case "ArrowRight":
+							resourceY++;
+							break;
+					}
+				let potentialResourceBlock = document.getElementById(rows * resourceX + resourceY + " " + user.xRoom + " " + user.yRoom);
+				if (items.includes(potentialResourceBlock.className))
+				{
+					isResource = true;
+					resourceBlock = potentialResourceBlock;
+				} 
+				else 
+				{
+					isResource = false;
+					resourceBlock = null;
+				}
 			}
-
+				
 			// Keep the previous position if false
 			if (isValidMovement(destX, destY) === false)
 			{
@@ -337,15 +369,14 @@ document.addEventListener("DOMContentLoaded", function ()
 
 function collectResource()
 {
-	Promise.resolve(showProgressBar())
-		.then(function ()
+	Promise.resolve(showProgressBar()) // show the progress bar
+		.then(function () // wait for the progress bar to finish
 		{
-			// remove background color
-			resourceBlock.style.backgroundColor = "";
-			updateResource(resourceBlock.className);
-			connection
-				.invoke("UpdateResources", resourceBlock.id)
-				.catch(function (err)
+			resourceBlock.style.backgroundColor = ""; // reset the resource block's background color
+			updateResource(resourceBlock.className); // update the resource in the HUD
+			connection // send the resource block's id to the server
+				.invoke("UpdateResources", resourceBlock.id) // invoke the UpdateResources method in the server
+				.catch(function (err) 
 				{
 					return console.error(err.toString());
 				});
