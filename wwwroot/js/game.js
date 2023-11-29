@@ -1,6 +1,6 @@
 import { updateResource, useItem } from "./hud.js";
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build();
+var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build(); // Create a connection to the gameHub
 let players;
 
 const MAX_TILES = 121;
@@ -299,8 +299,8 @@ document.addEventListener("DOMContentLoaded", function ()
 			}
 			prevX = destX;
 			prevY = destY;
-			connection
-				.invoke(
+			connection // send the player's movement to the server
+				.invoke( // invoke the playerMove method in the server
 					"playerMove",
 					player,
 					destX.toString(),
@@ -420,7 +420,6 @@ connection.on("playerMove", (playerName, x, y, xRoom, yRoom, xRoomPrev, yRoomPre
 	players[playerName].yRoom = parseInt(yRoom);
 	players[playerName].xPos = intX;
 	players[playerName].yPos = intY;
-	//console.log(playerName + " x:" + players[playerName].xPos + " y:" + players[playerName].yPos + " xRoom:" + players[playerName].xRoom + " yRoom:" + players[playerName].yRoom);
 });
 
 connection.on("update", () => { });
