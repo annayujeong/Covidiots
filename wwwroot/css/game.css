@@ -126,3 +126,28 @@
   transition: opacity 1s ease-out;
   display: none; /* Initially hide the message */
 }
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    text-align: center;
+}
+
+#overlay-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.text-stress {
+    color: red;
+    font-weight: bold;
+}

@@ -137,6 +137,9 @@ document.addEventListener("DOMContentLoaded", function ()
 			document.getElementById("players").innerHTML.slice(0, -2)
 		);
         let player = document.getElementById("user").innerHTML;
+
+        displayTeamMessage(players[player].IsInfected);
+        
 		let prevX;
 		let prevY;
 		if (players[player] != null)
@@ -570,4 +573,31 @@ function changePlayerFacingDirection(prevX, prevY, destX, destY, prevCell, destC
 	{
 		prevCell.style.backgroundImage = "";
 	}
+}
+
+function displayTeamMessage(IsInfected) {
+    let msgTeamElement = document.getElementById("msg-team");
+    let msgDescriptionElement = document.getElementById("msg-description");
+    if (IsInfected) {
+        msgTeamElement.innerHTML = "You are <span class='text-stress'>infected</span> to COVID-19.";
+        msgDescriptionElement.innerHTML = "Try <span class='text-stress'>spreading virus</span> to as many players as possible to win!";
+    } else {
+        msgTeamElement.innerHTML = "You are <span class='text-stress'>COVID-19 safe</span> for now.";
+        msgDescriptionElement.innerHTML = "<span class='text-stress'>Avoid contact</span> with players and <span class='text-stress'>gather all resources</span> to win!";
+    }
+    startCountdown(15);
+}
+
+function startCountdown(seconds) {
+    var countdownElement = document.getElementById('countdown');
+    function updateCountdown() {
+        seconds--;
+        countdownElement.textContent = seconds;
+        if (seconds <= 0) {
+            document.getElementById('msg-container').style.display = 'none';
+        } else {
+            setTimeout(updateCountdown, 1000);
+        }
+    }
+    updateCountdown();
 }
