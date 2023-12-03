@@ -391,14 +391,45 @@ connection.on("getCoughed", (affectedFloors) => {
         let isHealthEmpty = updateStats(-20, "health"); // TODO: can adjust, use const
         let isThirstEmpty = updateStats(-20, "thirst");
         let isHungerEmpty = updateStats(-20, "hunger");
-        console.log(players[player].Name + " GOT COUGHED :(");
 
         if (isHealthEmpty || isThirstEmpty || isHungerEmpty) {
             players[player].IsInfected = true;
-            player
+            let didInfectedWin = checkIfInfectedWon();
+            if (didInfectedWin) {
+                notifiyGameOver("INFECTED");
+            }
         }
     }
 });
+
+let numberOfInfected = 0;
+function increaseNumnberOfInfected () {
+    numberOfInfected++;
+}
+
+function checkIfInfectedWon() {
+    increaseNumnberOfInfected();
+    let numberOfPlayers = Object.keys(players).length;
+    return numberOfInfected > (numberOfPlayers / 2) ? true : false;
+}
+
+connection.on("allResourcesCollected", () => {
+    notifiyGameOver("NON-INFECTED");
+});
+
+function notifiyGameOver(team) {
+    connection.invoke("Gameover", team).catch((err) => {
+		return console.error(err.toString());
+	});
+}
+
+connection.on("gameOver", (winningTeam) => {
+	redirectToResult(winningTeam);
+});
+
+function redirectToResult(team) {
+    window.location.replace("/Result?team=" + team);
+}
 
 function collectResource() {
 	Promise.resolve(showProgressBar())

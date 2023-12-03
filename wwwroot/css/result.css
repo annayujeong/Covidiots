@@ -1,0 +1,27 @@
+@font-face {
+	font-family: "SuperEasy-ZVAr3";
+	src: url("/fonts/SuperEasy-ZVAr3.ttf") format("truetype");
+}
+
+#result-container {
+	display: flex;
+    flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 80vh;
+}
+
+.result-text {
+    font-family: "SuperEasy-ZVAr3", sans-serif;
+	font-size: 50pt;
+}
+
+#result-team {
+    font-family: "SuperEasy-ZVAr3", sans-serif;
+	font-size: 80pt;
+    color: #3f217a;
+}
+
+#result-button {
+
+}

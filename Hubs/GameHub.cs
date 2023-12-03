@@ -15,7 +15,7 @@ namespace Covidiots.Hubs
         {
             this.clients = clients;
         }
-        public int maxItems = 50;
+        public int maxItems = 10;
         public int numberOfItems = 3;
         public static List<Dictionary<string, string>> Resources = new();
         public static bool didResourceInvoke = false;
@@ -63,6 +63,9 @@ namespace Covidiots.Hubs
         {
             //int intValue = int.Parse(id);
             Resources.RemoveAll(dictionary => dictionary.TryGetValue("itemPosition", out var value) && value == id);
+            if (Resources.Count == 0) {
+                return Clients.All.SendAsync("allResourcesCollected");
+            }
             return Clients.All.SendAsync("updateResource", id);
         }
 
@@ -94,5 +97,11 @@ namespace Covidiots.Hubs
             KeyValuePair<string, Player> playerEntry = clients.Players.FirstOrDefault(pair => pair.Value.Email == email);
             return playerEntry.Value;
         }
+
+        public Task GameOver(string winningTeam)
+        {
+            return Clients.All.SendAsync("gameOver", winningTeam);
+        }
+
     }
 }
