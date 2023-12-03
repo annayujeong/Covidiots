@@ -1,3 +1,16 @@
 #hud-map {
-    display: none;
+	display: none;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 10px;
+	padding: 0 1em 0 1em;
+}
+
+.room {
+	flex: 0 0 calc(33.33% - 10px);
+	box-sizing: border-box;
+	border: 1px solid #000;
+	text-align: center;
+	padding: 20px;
+	background-color: grey;
 }

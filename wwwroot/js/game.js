@@ -1,4 +1,4 @@
-import { updateResource, useItem, updateStats } from "./hud.js";
+import { updateResource, useItem, updateStats, updateMap } from "./hud.js";
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/gameHub").build(); // Create a connection to the gameHub
 let players;
@@ -139,7 +139,8 @@ document.addEventListener("DOMContentLoaded", function ()
         let player = document.getElementById("user").innerHTML;
 
         displayTeamMessage(players[player].IsInfected);
-        
+        updateMap(players[player].xRoom, players[player].yRoom);
+
 		let prevX;
 		let prevY;
 		if (players[player] != null)
@@ -524,6 +525,7 @@ connection.on("playerMove", (playerName, x, y, xRoom, yRoom, xRoomPrev, yRoomPre
 	players[playerName].yRoom = parseInt(yRoom);
 	players[playerName].xPos = intX;
 	players[playerName].yPos = intY;
+    updateMap(xRoom, yRoom);
 });
 
 connection.on("update", () => { });

@@ -171,4 +171,14 @@ function updateStats(statsEffect, statsName) {
     return isInfected;
 }
 
-export { updateResource, useItem, updateStats };
+function updateMap(xRoom, yRoom) {
+    var container = document.getElementById('hud-map');
+    var elements = container.querySelectorAll('.room');
+    elements.forEach((element) => {
+        element.style.backgroundColor = 'grey';
+    });
+    let currentRoomElement = document.getElementById(xRoom + " " + yRoom);
+    currentRoomElement.style.backgroundColor = "red";
+}
+
+export { updateResource, useItem, updateStats, updateMap };
