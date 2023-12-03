@@ -5,9 +5,9 @@ namespace Covidiots.Pages;
 
 public class ResultModel : PageModel
 {
-    private readonly ILogger<PrivacyModel> _logger;
+    private readonly ILogger<ResultModel> _logger;
 
-    public ResultModel(ILogger<PrivacyModel> logger)
+    public ResultModel(ILogger<ResultModel> logger)
     {
         _logger = logger;
     }
