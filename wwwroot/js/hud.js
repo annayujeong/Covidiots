@@ -168,6 +168,7 @@ function updateStats(statsEffect, statsName) {
 		statsList[statsName] = updatedValue;
 	}
 	setStatsHud();
+    return isInfected;
 }
 
 export { updateResource, useItem, updateStats };

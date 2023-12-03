@@ -15,7 +15,7 @@ namespace Covidiots.Hubs
         {
             this.clients = clients;
         }
-        public int maxItems = 10;
+        public int maxItems = 50;
         public int numberOfItems = 3;
         public static List<Dictionary<string, string>> Resources = new();
         public static bool didResourceInvoke = false;
