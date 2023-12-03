@@ -100,6 +100,8 @@ namespace Covidiots.Hubs
 
         public Task GameOver(string winningTeam)
         {
+            Resources.Clear();
+            didResourceInvoke = false;
             return Clients.All.SendAsync("gameOver", winningTeam);
         }
 
