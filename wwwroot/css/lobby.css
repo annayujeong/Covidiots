@@ -1,0 +1,17 @@
+#lobby-main-text{
+    font-family: "SuperEasy-ZVAr3", sans-serif;
+	font-size: 50pt;
+    text-align: center;
+    color: #3f217a;
+}
+
+#startButton {
+    background: #5e5df0;
+	width: 100%;
+	margin-top: 1em;
+}
+
+.result-text {
+    font-family: "SuperEasy-ZVAr3", sans-serif;
+	font-size: 50pt;
+}

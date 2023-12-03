@@ -9,7 +9,7 @@ var user = await userManager.GetUserAsync(User);
 }
 
 
-<h1>Lobby</h1>
+<h1 id="lobby-main-text">Lobby</h1>
 <div id="mainFlexContainer">
 
     <div class="flexItem">
@@ -25,8 +25,8 @@ var user = await userManager.GetUserAsync(User);
         </ul>
         
 
-        <button id="joinButton" onclick="joinButton()">Join Lobby</button>
-        <button id="readyButton" onclick="readyButton()" disabled="true">Ready</a></button>
+        <button class="button" id="joinButton" onclick="joinButton()">Join Lobby</button>
+        <button class="button" id="readyButton" onclick="readyButton()" disabled="true">Ready</a></button>
     </div>
 
     <div class="flexItem">
@@ -52,7 +52,7 @@ var user = await userManager.GetUserAsync(User);
 
 
         <div class=buttonDiv>
-            <button disabled=true onclick="startGame()" id="startButton">Start game</a></button>
+            <button class="button" disabled=true onclick="startGame()" id="startButton">Start game</a></button>
         </div>
     </div>
 
@@ -64,7 +64,7 @@ var user = await userManager.GetUserAsync(User);
         <label for="messageInput" id="userInput">@user?.ScreenName</label><br>
         <p hidden="true" id="userEmail">@user?.Email</p>
         <input type="text" id="messageInput" />
-        <input type="button" id="sendButton" value="Send Message" />
+        <input class="button" type="button" id="sendButton" value="Send Message" />
     </div>
 
 
@@ -73,9 +73,7 @@ var user = await userManager.GetUserAsync(User);
 
 </div>
 
-
+<link rel="stylesheet" href="~/css/common.css" />
+<link rel="stylesheet" href="~/css/lobby.css" />
 <script src="~/js/signalr/dist/browser/signalr.js"></script>
-
 <script defer src="~/js/tabs.js"></script>
-
-

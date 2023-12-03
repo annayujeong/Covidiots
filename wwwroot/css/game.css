@@ -87,10 +87,30 @@
   background-color: #4caf50;
 }
 
-#dialog-button 
-{
-  margin-left: 45%;
-  font-size: xx-large;
+#control-button-container {
+    text-align: center;
+}
+
+#dialog-button {
+    color: #4342ad;
+	border-radius: 999px;
+	box-shadow: black 0 5px 5px -5px;
+	box-sizing: border-box;
+	background-color: #f4f4f4;
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 24px;
+	opacity: 1;
+	outline: 0 solid transparent;
+	padding: 8px 18px;
+	user-select: none;
+	-webkit-user-select: none;
+	touch-action: manipulation;
+	width: fit-content;
+	word-break: break-word;
+	border: 0;
+    margin-bottom: 1em;
 }
 
 #message {
