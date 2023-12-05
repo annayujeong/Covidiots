@@ -19,7 +19,7 @@ namespace Covidiots.Hubs
         public int numberOfItems = 3;
         public static List<Dictionary<string, string>> Resources = new();
         public static bool didResourceInvoke = false;
-
+        public static int infected = 0;
         public override Task OnConnectedAsync()
         {
             return base.OnConnectedAsync();
@@ -98,10 +98,17 @@ namespace Covidiots.Hubs
             return playerEntry.Value;
         }
 
+        public Task IncreaseInfected()
+        {
+            infected++;
+            return Clients.All.SendAsync("increaseInfected", infected);
+        }
+    
         public Task GameOver(string winningTeam)
         {
             Resources.Clear();
             didResourceInvoke = false;
+            infected = 0;
             return Clients.All.SendAsync("gameOver", winningTeam);
         }
 

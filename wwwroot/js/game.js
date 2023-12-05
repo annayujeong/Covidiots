@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function ()
 		);
         let player = document.getElementById("user").innerHTML;
 
-        displayTeamMessage(players[player].IsInfected);
+        displayTeamMessage(players[player].IsInfected, 15);
         updateMap(players[player].xRoom, players[player].yRoom);
 
 		let prevX;
@@ -398,24 +398,21 @@ connection.on("getCoughed", (affectedFloors) => {
 
         if (isHealthEmpty || isThirstEmpty || isHungerEmpty) {
             players[player].IsInfected = true;
-            let didInfectedWin = checkIfInfectedWon();
-            if (didInfectedWin) {
-                notifiyGameOver("INFECTED");
-            }
+            displayTeamMessage(true, 3);
+            connection.invoke("IncreaseInfected").catch((err) => {
+                return console.error(err.toString());
+            });
+
         }
     }
 });
 
-let numberOfInfected = 0;
-function increaseNumnberOfInfected () {
-    numberOfInfected++;
-}
-
-function checkIfInfectedWon() {
-    increaseNumnberOfInfected();
+connection.on("increaseInfected", (numberOfInfected) => {
     let numberOfPlayers = Object.keys(players).length;
-    return numberOfInfected > (numberOfPlayers / 2) ? true : false;
-}
+    if (numberOfInfected > (numberOfPlayers / 2)) {
+        notifiyGameOver("INFECTED");
+    }
+});
 
 connection.on("allResourcesCollected", () => {
     notifiyGameOver("NON-INFECTED");
@@ -577,8 +574,10 @@ function changePlayerFacingDirection(prevX, prevY, destX, destY, prevCell, destC
 	}
 }
 
-function displayTeamMessage(IsInfected) {
+function displayTeamMessage(IsInfected, second) {
     let msgTeamElement = document.getElementById("msg-team");
+    let msgContainer = document.getElementById("msg-container");
+    msgContainer.style.display = "flex";
     let msgDescriptionElement = document.getElementById("msg-description");
     if (IsInfected) {
         msgTeamElement.innerHTML = "You are <span class='text-stress'>infected</span> to COVID-19.";
@@ -587,7 +586,7 @@ function displayTeamMessage(IsInfected) {
         msgTeamElement.innerHTML = "You are <span class='text-stress'>COVID-19 safe</span> for now.";
         msgDescriptionElement.innerHTML = "<span class='text-stress'>Avoid contact</span> with players and <span class='text-stress'>gather all resources</span> to win!";
     }
-    startCountdown(15);
+    startCountdown(second);
 }
 
 function startCountdown(seconds) {
