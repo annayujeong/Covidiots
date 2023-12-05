@@ -74,12 +74,21 @@ connection.on("startGame", () =>
     window.location.replace("/Game");
 
 })
-
+// when pressing enter in the message input box, click the send button
+document.getElementById("messageInput").addEventListener("keyup", function (event) 
+{
+    if (event.keyCode === 13) // keycode 13 is the enter key
+    {
+        event.preventDefault();
+        document.getElementById("sendButton").click();
+    }
+});
 document.getElementById("sendButton").addEventListener("click", function (event) 
 {
     var user = document.getElementById("userInput").innerHTML;
     var message = document.getElementById("messageInput").value;
-
+    // clear message input box
+    document.getElementById("messageInput").value = "";
     connection.invoke("SendMessage", user, message).catch(function (err) {
         return console.error(err.toString());
     });
