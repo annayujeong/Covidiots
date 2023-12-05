@@ -392,11 +392,11 @@ connection.on("getCoughed", (affectedFloors) => {
     let currentPos = currentXPos * 11 + currentYPos;
     let currentPosId = currentPos + " " + currentXRoom + " " + currentYRoom;
     if (affectedFloors.includes(currentPosId)) {
-        let isHealthEmpty = updateStats(-20, "health"); // TODO: can adjust, use const
-        let isThirstEmpty = updateStats(-20, "thirst");
-        let isHungerEmpty = updateStats(-20, "hunger");
+        let isHealthEmpty = updateStats(-10, "health"); // TODO: can adjust, use const
+        let isThirstEmpty = updateStats(-10, "thirst");
+        let isHungerEmpty = updateStats(-10, "hunger");
 
-        if (isHealthEmpty || isThirstEmpty || isHungerEmpty) {
+        if (!players[player].IsInfected && (isHealthEmpty || isThirstEmpty || isHungerEmpty)) {
             players[player].IsInfected = true;
             displayTeamMessage(true, 3);
             connection.invoke("IncreaseInfected").catch((err) => {
