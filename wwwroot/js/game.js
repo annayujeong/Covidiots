@@ -392,7 +392,7 @@ connection.on("getCoughed", (affectedFloors) => {
     let currentPos = currentXPos * 11 + currentYPos;
     let currentPosId = currentPos + " " + currentXRoom + " " + currentYRoom;
     if (affectedFloors.includes(currentPosId)) {
-        let isHealthEmpty = updateStats(-10, "health"); // TODO: can adjust, use const
+        let isHealthEmpty = updateStats(-10, "health");
         let isThirstEmpty = updateStats(-10, "thirst");
         let isHungerEmpty = updateStats(-10, "hunger");
 
@@ -548,7 +548,7 @@ function showMessage()
 
 function changePlayerFacingDirection(prevX, prevY, destX, destY, prevCell, destCell) 
 {
-	let baseCharacterURL = "/images/characters/1/"; // TODO add function so that other players have a different sprites (1, 2, 3, etc.)
+	let baseCharacterURL = "/images/characters/1/";
 	// switch background image depending on the direction of movement 
 	if (prevX > destX)
 	{

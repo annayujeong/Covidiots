@@ -10,12 +10,10 @@ let resourceDictionary = {
 
 let resourceList = {};
 let statsList = {
-	// TODO: change values
 	health: 50,
 	thirst: 50,
 	hunger: 50,
 };
-let currentLocation = null;
 
 document.addEventListener("keydown", function (event) {
 	let inputKey = null;
@@ -138,7 +136,7 @@ function useItem(itemIndex) {
 	}
 	switch (item) {
 		case "toilet-paper":
-			updateStats(10, "health"); // TODO: use const for numbers
+			updateStats(10, "health");
 			break;
 		case "fries":
 			updateStats(12, "hunger");

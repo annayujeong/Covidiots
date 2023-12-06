@@ -6,7 +6,7 @@
 	height: 25vh;
 	position: fixed;
 	bottom: 100px;
-	right: 100px; /* TODO: change bottom and right*/
+	right: 100px;
 	color: white;
     display: none;
 }
